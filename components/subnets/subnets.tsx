@@ -194,7 +194,7 @@ export default function SubnetTable({ users }: SubnetProps) {
   const [workerTypeFilter, setWorkerTypeFilter] = React.useState("all");
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [startDateFilter, setStartDateFilter] = React.useState("all");
-  const [avatar, setAvatar] = useState(null);
+  // const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState('');
   const [isRemove, setIsRemove] = useState(false);
   const [showPermission, setPermissionModal] = useState(false);
