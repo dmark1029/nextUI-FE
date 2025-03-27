@@ -46,6 +46,7 @@ export default function Component() {
               startContent={<Icon icon="flat-color-icons:google" width={24} />}
               variant="bordered"
               onPress={() => signIn("google", { callbackUrl: "/" })}
+              // onPress={() => signOut({ redirect: false })}
             >
               Continue with Google
             </Button>
@@ -57,13 +58,7 @@ export default function Component() {
             </Button> */}
           </div>
 
-          <div className="flex w-full items-center gap-4 py-2">
-            <Divider className="flex-1" />
-            <p className="shrink-0 text-tiny text-default-500">OR</p>
-            <Divider className="flex-1" />
-          </div>
-
-          <Form
+          {/* <Form
             className="flex w-full flex-col gap-3"
             validationBehavior="native"
             onSubmit={handleSubmit}
@@ -117,7 +112,7 @@ export default function Component() {
             <Link href="#" size="sm">
               Sign Up
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
 
