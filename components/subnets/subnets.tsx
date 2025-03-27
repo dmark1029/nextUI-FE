@@ -39,12 +39,7 @@ import {
   Select,
   SelectItem,
   Alert,
-  Textarea,
   Spinner,
-  Accordion,
-  AccordionItem,
-  Card,
-  CardBody
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
 import React, { useMemo, useRef, useCallback, useState, useEffect } from "react";
