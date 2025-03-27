@@ -1,14 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const statusOptions = [
-  { name: "Active", uid: "active" },
-  { name: "Inactive", uid: "inactive" },
-  { name: "Paused", uid: "paused" },
-  { name: "Vacation", uid: "vacation" },
-] as const;
-
-export type StatusOptions = (typeof statusOptions)[number]["name"];
-
 type Teams =
   | "Design"
   | "Product"
@@ -38,7 +29,7 @@ export type Users = {
   teams: Teams[];
 };
 
-export const mockUsers: Users[] = [
+const mockUsers: Users[] = [
   {
     id: 1,
     userID: 1001,
