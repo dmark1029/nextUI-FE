@@ -26,7 +26,7 @@ export type Subnets = {
   engineers: Engineers[];
 };
 
-export const mockSubnets: Subnets[] = [
+const mockSubnets: Subnets[] = [
   {
     id: 1,
     username: {
@@ -160,7 +160,6 @@ export const mockSubnets: Subnets[] = [
     engineers: ["Customer Support", "Product"],
   },
 ];
-
 
 // API Route using Next.js App Router
 export async function GET() {
