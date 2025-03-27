@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
 
+const statusOptions = [
+  { name: "Active", uid: "active" },
+  { name: "Inactive", uid: "inactive" },
+  { name: "Paused", uid: "paused" },
+  { name: "Vacation", uid: "vacation" },
+];
+
+export type StatusOptions = (typeof statusOptions)[number]["name"];
+
 type Teams =
   | "Design"
   | "Product"
