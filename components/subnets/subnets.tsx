@@ -50,7 +50,6 @@ import { SearchIcon } from "@heroui/shared-icons";
 import React, { useMemo, useRef, useCallback, useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
-import { CopyText } from "./copy-text";
 import { ArrowDownIcon } from "./arrow-down";
 import { ArrowUpIcon } from "./arrow-up";
 
