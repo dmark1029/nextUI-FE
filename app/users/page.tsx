@@ -1,6 +1,6 @@
 "use client";
 import { Users } from "@/components/user/data";
-import Component from "@/components/user/user";
+import UserTable from "@/components/user/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -26,13 +26,13 @@ export default function PricingPage() {
     }
   };
 
-  if (users.length === 0) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div>
-      <Component users={users} />
-    </div>
+    users.length !== 0 ? (
+      <div>
+        <UserTable users={users} />
+      </div>
+    ) : (
+      <div className="flex justify-center align-center mt-20">Loading...</div>
+    )
   );
 }
