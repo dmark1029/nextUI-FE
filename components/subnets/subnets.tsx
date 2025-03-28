@@ -198,7 +198,7 @@ export default function SubnetTable({ users }: SubnetProps) {
   const [avatarPreview, setAvatarPreview] = useState('');
   const [isRemove, setIsRemove] = useState(false);
   const [showPermission, setPermissionModal] = useState(false);
-
+  // test
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {

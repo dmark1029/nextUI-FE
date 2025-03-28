@@ -13,7 +13,7 @@ export default function PricingPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get<Subnets[]>("http://localhost:3000/api/subnets");
+      const response = await axios.get<Subnets[]>("http://107.189.19.248:3000/api/subnets");
       setUsers(
         response.data.map((user) => ({
           ...user,
