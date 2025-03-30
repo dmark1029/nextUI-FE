@@ -15,7 +15,7 @@ pipeline {
       }
     }
     stage('Build') {
-      ssteps {
+      steps {
         bat 'npm run build'
         bat 'echo "Build folder content:"'
         bat 'dir .next'
@@ -30,7 +30,7 @@ pipeline {
       steps {
         bat '''
         if not exist C:\\Path\\To\\Deployment\\Folder mkdir C:\\Path\\To\\Deployment\\Folder
-        xcopy /E /I /Y build C:\\Path\\To\\Deployment\\Folder
+        xcopy /E /I /Y .next C:\\Path\\To\\Deployment\\Folder
         '''
       }
     }
