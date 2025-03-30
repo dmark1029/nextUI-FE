@@ -30,7 +30,7 @@ pipeline {
       steps {
         bat '''
         if not exist C:\\Path\\To\\Deployment\\Folder mkdir C:\\Path\\To\\Deployment\\Folder
-        xcopy /E /I /Y build C:\\Path\\To\\Deployment\\Folder
+        xcopy /E /I /Y .next C:\\Path\\To\\Deployment\\Folder
         '''
       }
     }
