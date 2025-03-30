@@ -15,7 +15,7 @@ pipeline {
       }
     }
     stage('Build') {
-      ssteps {
+      steps {
         bat 'npm run build'
         bat 'echo "Build folder content:"'
         bat 'dir .next'
