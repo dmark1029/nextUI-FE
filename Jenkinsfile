@@ -16,7 +16,17 @@ pipeline {
     }
     stage('Build') {
       steps {
-        bat 'npm run build'
+        bat '''
+        echo "Starting build..."
+        npm run build
+        echo "Checking build folder..."
+        dir build
+        '''
+      }
+    }
+    stage('Debug Build Location') {
+      steps {
+        bat 'where /R . build'
       }
     }
     // stage('Test') {
