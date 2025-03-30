@@ -3,7 +3,10 @@ pipeline {
   stages {
     stage('Clone Repository') {
       steps {
-        git 'https://github.com/dmark1029/nextUI-FE.git'
+        checkout([$class: 'GitSCM', 
+          branches: [[name: '*/SSO-signin']], 
+          userRemoteConfigs: [[url: 'https://github.com/dmark1029/nextUI-FE.git']]
+        ])
       }
     }
     stage('Install Dependencies') {
@@ -23,7 +26,10 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        bat 'xcopy /E /I /Y build C:\\Path\\To\\Deployment\\Folder'
+        bat '''
+        if not exist C:\\Path\\To\\Deployment\\Folder mkdir C:\\Path\\To\\Deployment\\Folder
+        xcopy /E /I /Y build C:\\Path\\To\\Deployment\\Folder
+        '''
       }
     }
   }
