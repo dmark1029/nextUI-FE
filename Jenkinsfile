@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Clone Repository') {
       steps {
-        git 'https://github.com/your-repo.git'
+        git 'https://github.com/dmark1029/nextUI-FE.git'
       }
     }
     stage('Install Dependencies') {
