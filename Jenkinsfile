@@ -15,18 +15,10 @@ pipeline {
       }
     }
     stage('Build') {
-      steps {
-        bat '''
-        echo "Starting build..."
-        npm run build
-        echo "Checking build folder..."
-        dir build
-        '''
-      }
-    }
-    stage('Debug Build Location') {
-      steps {
-        bat 'where /R . build'
+      ssteps {
+        bat 'npm run build'
+        bat 'echo "Build folder content:"'
+        bat 'dir .next'
       }
     }
     // stage('Test') {
