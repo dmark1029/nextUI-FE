@@ -26,6 +26,7 @@ pipeline {
     //     bat 'npm test'
     //   }
     // }
+    // need to do Test
     stage('Deploy') {
       steps {
         bat '''
