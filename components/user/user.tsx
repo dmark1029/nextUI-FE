@@ -1,9 +1,9 @@
 "use client";
 
 import type { Selection, SortDescriptor } from "@heroui/react";
-import type { ColumnsKey, StatusOptions, Users } from "./data";
-import { columns, INITIAL_VISIBLE_COLUMNS } from "./data";
+import type { ColumnsKey, Users } from "./data";
 import type { Key } from "@react-types/shared";
+
 import {
   Dropdown,
   DropdownTrigger,
@@ -24,7 +24,6 @@ import {
   Pagination,
   Divider,
   Tooltip,
-  useButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -35,26 +34,22 @@ import {
   ModalFooter,
   useDisclosure,
   Checkbox,
-  Link,
   Select,
   SelectItem,
   Alert,
   Textarea,
-  Spinner
+  Spinner,
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useRef, useCallback, useState, useEffect } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
+
+import { columns, INITIAL_VISIBLE_COLUMNS } from "./data";
 import { CopyText } from "./copy-text";
-import { EyeFilledIcon } from "./eye";
-import { EditLinearIcon } from "./edit";
-import { DeleteFilledIcon } from "./delete";
 import { ArrowDownIcon } from "./arrow-down";
 import { ArrowUpIcon } from "./arrow-up";
-
 import { useMemoizedCallback } from "./use-memoized-callback";
-import { Status } from "./Status";
 
 interface UserProps {
   users: Users[];
@@ -66,7 +61,13 @@ interface UserIconProps extends React.SVGProps<SVGSVGElement> {
   height?: number;
   width?: number;
 }
-export const UserIcon: React.FC<UserIconProps> = ({ fill = "currentColor", size, height, width, ...props }) => {
+export const UserIcon: React.FC<UserIconProps> = ({
+  fill = "currentColor",
+  size,
+  height,
+  width,
+  ...props
+}) => {
   return (
     <svg
       data-name="Iconly/Curved/Profile"
@@ -88,12 +89,14 @@ export const UserIcon: React.FC<UserIconProps> = ({ fill = "currentColor", size,
           d="M11.845 21.662C8.153 21.662 5 21.088 5 18.787s3.133-4.425 6.845-4.425c3.692 0 6.845 2.1 6.845 4.4s-3.134 2.9-6.845 2.9z"
           data-name="Stroke 1"
         />
-        <path d="M11.837 11.174a4.372 4.372 0 10-.031 0z" data-name="Stroke 3" />
+        <path
+          d="M11.837 11.174a4.372 4.372 0 10-.031 0z"
+          data-name="Stroke 3"
+        />
       </g>
     </svg>
   );
 };
-
 
 export const userRoles = [
   { key: "admin", label: "Admin" },
@@ -149,53 +152,51 @@ export default function UserTable({ users }: UserProps) {
   const {
     isOpen: isRemoveModalOpen,
     onOpen: onRemoveModalOpen,
-    onClose: onRemoveModalClose,
+    // onClose: onRemoveModalClose,
     onOpenChange: onRemoveModalChange,
     onOpenChange: onPermissionModalChange,
-    isOpen: isPermissionModalOpen
+    isOpen: isPermissionModalOpen,
   } = useDisclosure();
 
-  const [mockUsers, setMockUsers] = useState([
-    { id: 1, name: "Josh", instanceRead: true, instanceWrite: false, instanceDelete: false, minerRead: false, minerWrite: true, minerDelete: false },
+  const [mockUsers] = useState([
+    {
+      id: 1,
+      name: "Josh",
+      instanceRead: true,
+      instanceWrite: false,
+      instanceDelete: false,
+      minerRead: false,
+      minerWrite: true,
+      minerDelete: false,
+    },
   ]);
-  const handleToggle = (userId: number, field: keyof typeof mockUsers[0]) => {
-    setMockUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === userId ? { ...user, [field]: !user[field] } : user
-      )
-    );
-  };
+  // const handleToggle = (userId: number, field: keyof (typeof mockUsers)[0]) => {
+  //   setMockUsers((prevUsers) =>
+  //     prevUsers.map((user) =>
+  //       user.id === userId ? { ...user, [field]: !user[field] } : user,
+  //     ),
+  //   );
+  // };
 
-  const [backdrop, setBackdrop] = React.useState<"blur" | "transparent" | "opaque">("blur");
+  const [backdrop] = React.useState<"blur" | "transparent" | "opaque">("blur");
 
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
+    new Set(INITIAL_VISIBLE_COLUMNS),
+  );
   const [rowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "username",
     direction: "ascending",
   });
-  const [selectedRole, setSelectedRole] = useState("");
   const [workerTypeFilter, setWorkerTypeFilter] = React.useState("all");
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [startDateFilter, setStartDateFilter] = React.useState("all");
-  const [avatar, setAvatar] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState('');
-  const [isRemove, setIsRemove] = useState(false);
-  const [showPermission, setPermissionModal] = useState(false);
+  // const [isRemove, setIsRemove] = useState(false);
+  // const [showPermission, setPermissionModal] = useState(false);
 
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setAvatarPreview(previewUrl);
-    }
-  };
-  const handleSelectRole = (e: any) => {
-    setSelectedRole(e.target.value);
-  }
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -216,7 +217,6 @@ export default function UserTable({ users }: UserProps) {
   const itemFilter = useCallback(
     (col: Users) => {
       let allWorkerType = workerTypeFilter === "all";
-      let allStatus = statusFilter === "all";
       let allStartDate = startDateFilter === "all";
 
       return (
@@ -225,7 +225,11 @@ export default function UserTable({ users }: UserProps) {
         (allStartDate ||
           new Date(
             new Date().getTime() -
-            +(startDateFilter.match(/(\d+)(?=Days)/)?.[0] ?? 0) * 24 * 60 * 60 * 1000,
+              +(startDateFilter.match(/(\d+)(?=Days)/)?.[0] ?? 0) *
+                24 *
+                60 *
+                60 *
+                1000,
           ) <= new Date(col.createdAt))
       );
     },
@@ -295,129 +299,142 @@ export default function UserTable({ users }: UserProps) {
     return resultKeys;
   }, [selectedKeys, filteredItems, filterValue]);
 
-  const eyesRef = useRef<HTMLButtonElement | null>(null);
-  const editRef = useRef<HTMLButtonElement | null>(null);
-  const deleteRef = useRef<HTMLButtonElement | null>(null);
-  const { getButtonProps: getEyesProps } = useButton({ ref: eyesRef });
-  const { getButtonProps: getEditProps } = useButton({ ref: editRef });
-  const { getButtonProps: getDeleteProps } = useButton({ ref: deleteRef });
   const getMemberInfoProps = useMemoizedCallback(() => ({
     onClick: handleMemberClick,
   }));
 
   const openModal = () => {
     onOpen();
-    setAvatarPreview('');
-  }
-
+  };
 
   const confirmDelete = () => {
     onRemoveModalOpen();
-    setIsRemove(true);
-  }
+    // setIsRemove(true);
+  };
 
   const setPermission = () => {
     onPermissionModalChange();
-    setPermissionModal(true);
-  }
-  const renderCell = useMemoizedCallback((user: Users, columnKey: React.Key) => {
-    const userKey = columnKey as ColumnsKey;
+    // setPermissionModal(true);
+  };
+  const renderCell = useMemoizedCallback(
+    (user: Users, columnKey: React.Key) => {
+      const userKey = columnKey as ColumnsKey;
 
-    const cellValue = user[userKey as unknown as keyof Users] as string;
-    switch (userKey) {
-      case "userID":
-      case "externalWorkerID":
-        return <CopyText>{cellValue}</CopyText>;
-      case "username":
-        return (
-          <User
-            avatarProps={{ radius: "lg", src: user[userKey].avatar }}
-            classNames={{
-              name: "text-default-foreground",
-              description: "text-default-500",
-            }}
-            description={user[userKey].email}
-            name={user[userKey].name}
-          >
-            {user[userKey].email}
-          </User>
-        );
-      case "createdAt":
-        return (
-          <div className="flex items-center gap-1">
-            <p className="text-nowrap text-small capitalize text-default-foreground">
-              {new Intl.DateTimeFormat("en-US", {
-                month: "2-digit",
-                day: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              }).format(cellValue as unknown as Date)}
-            </p>
-          </div>
-        );
-      case "subnets":
-        return (
-          <div className="flex items-center gap-2">
-            <p className="text-nowrap text-small text-default-foreground">{user[userKey]}</p>
-          </div>
-        );
-      // case "teams":
-      //   return (
-      //     <div className="float-start flex gap-1">
-      //       {user[userKey].map((team: any, index: number) => {
-      //         if (index < 3) {
-      //           return (
-      //             <Chip
-      //               key={team}
-      //               className="rounded-xl bg-default-100 px-[6px] capitalize text-default-800"
-      //               size="sm"
-      //               variant="flat"
-      //             >
-      //               {team}
-      //             </Chip>
-      //           );
-      //         }
-      //         if (index < 4) {
-      //           return (
-      //             <Chip key={team} className="text-default-500" size="sm" variant="flat">
-      //               {`+${team.length - 3}`}
-      //             </Chip>
-      //           );
-      //         }
+      const cellValue = user[userKey as unknown as keyof Users] as string;
 
-      //         return null;
-      //       })}
-      //     </div>
-      //   );
-      case "role":
-        return <div className="text-default-foreground">{cellValue}</div>;
-      // case "status":
-      //   return <Status status={cellValue as StatusOptions} />;
-      case "actions":
-        return (
-          <div className="flex items-center justify-end gap-2">
-            <Button color="success" startContent={<UserIcon />} variant="ghost" size="sm">
-              Update
-            </Button>
-            <Button color="danger" startContent={<UserIcon />} variant="ghost" onPress={() => confirmDelete()} size="sm">
-              Delete
-            </Button>
-          </div>
-        );
-      case "permission":
-        return (
-          <div className="flex items-center justify-end gap-2">
-            <Button color="primary" variant="shadow" size="sm" onPress={() => setPermission()}>
-              Permission
-            </Button>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  });
+      switch (userKey) {
+        case "userID":
+        case "externalWorkerID":
+          return <CopyText>{cellValue}</CopyText>;
+        case "username":
+          return (
+            <User
+              avatarProps={{ radius: "lg", src: user[userKey].avatar }}
+              classNames={{
+                name: "text-default-foreground",
+                description: "text-default-500",
+              }}
+              description={user[userKey].email}
+              name={user[userKey].name}
+            >
+              {user[userKey].email}
+            </User>
+          );
+        case "createdAt":
+          return (
+            <div className="flex items-center gap-1">
+              <p className="text-nowrap text-small capitalize text-default-foreground">
+                {new Intl.DateTimeFormat("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                }).format(cellValue as unknown as Date)}
+              </p>
+            </div>
+          );
+        case "subnets":
+          return (
+            <div className="flex items-center gap-2">
+              <p className="text-nowrap text-small text-default-foreground">
+                {user[userKey]}
+              </p>
+            </div>
+          );
+        // case "teams":
+        //   return (
+        //     <div className="float-start flex gap-1">
+        //       {user[userKey].map((team: any, index: number) => {
+        //         if (index < 3) {
+        //           return (
+        //             <Chip
+        //               key={team}
+        //               className="rounded-xl bg-default-100 px-[6px] capitalize text-default-800"
+        //               size="sm"
+        //               variant="flat"
+        //             >
+        //               {team}
+        //             </Chip>
+        //           );
+        //         }
+        //         if (index < 4) {
+        //           return (
+        //             <Chip key={team} className="text-default-500" size="sm" variant="flat">
+        //               {`+${team.length - 3}`}
+        //             </Chip>
+        //           );
+        //         }
+
+        //         return null;
+        //       })}
+        //     </div>
+        //   );
+        case "role":
+          return <div className="text-default-foreground">{cellValue}</div>;
+        // case "status":
+        //   return <Status status={cellValue as StatusOptions} />;
+        case "actions":
+          return (
+            <div className="flex items-center justify-end gap-2">
+              <Button
+                color="success"
+                size="sm"
+                startContent={<UserIcon />}
+                variant="ghost"
+              >
+                Update
+              </Button>
+              <Button
+                color="danger"
+                size="sm"
+                startContent={<UserIcon />}
+                variant="ghost"
+                onPress={() => confirmDelete()}
+              >
+                Delete
+              </Button>
+            </div>
+          );
+        case "permission":
+          return (
+            <div className="flex items-center justify-end gap-2">
+              <Button
+                color="primary"
+                size="sm"
+                variant="shadow"
+                onPress={() => setPermission()}
+              >
+                Permission
+              </Button>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+  );
 
   const onNextPage = useMemoizedCallback(() => {
     if (page < pages) {
@@ -443,7 +460,9 @@ export default function UserTable({ users }: UserProps) {
   const onSelectionChange = useMemoizedCallback((keys: Selection) => {
     if (keys === "all") {
       if (filterValue) {
-        const resultKeys = new Set(filteredItems.map((item) => String(item.id)));
+        const resultKeys = new Set(
+          filteredItems.map((item) => String(item.id)),
+        );
 
         setSelectedKeys(resultKeys);
       } else {
@@ -479,7 +498,9 @@ export default function UserTable({ users }: UserProps) {
           <div className="flex items-center gap-4">
             <Input
               className="min-w-[200px]"
-              endContent={<SearchIcon className="text-default-400" width={16} />}
+              endContent={
+                <SearchIcon className="text-default-400" width={16} />
+              }
               placeholder="Search"
               size="sm"
               value={filterValue}
@@ -492,7 +513,11 @@ export default function UserTable({ users }: UserProps) {
                     className="bg-default-100 text-default-800"
                     size="sm"
                     startContent={
-                      <Icon className="text-default-400" icon="solar:tuning-2-linear" width={16} />
+                      <Icon
+                        className="text-default-400"
+                        icon="solar:tuning-2-linear"
+                        width={16}
+                      />
                     }
                   >
                     Filter
@@ -510,7 +535,11 @@ export default function UserTable({ users }: UserProps) {
                       <Radio value="contractor">Contractor</Radio>
                     </RadioGroup>
 
-                    <RadioGroup label="Status" value={statusFilter} onValueChange={setStatusFilter}>
+                    <RadioGroup
+                      label="Status"
+                      value={statusFilter}
+                      onValueChange={setStatusFilter}
+                    >
                       <Radio value="all">All</Radio>
                       <Radio value="active">Active</Radio>
                       <Radio value="inactive">Inactive</Radio>
@@ -539,7 +568,11 @@ export default function UserTable({ users }: UserProps) {
                     className="bg-default-100 text-default-800"
                     size="sm"
                     startContent={
-                      <Icon className="text-default-400" icon="solar:sort-linear" width={16} />
+                      <Icon
+                        className="text-default-400"
+                        icon="solar:sort-linear"
+                        width={16}
+                      />
                     }
                   >
                     Sort
@@ -547,7 +580,10 @@ export default function UserTable({ users }: UserProps) {
                 </DropdownTrigger>
                 <DropdownMenu
                   aria-label="Sort"
-                  items={headerColumns.filter((c: any) => !["actions", "teams", "permission"].includes(c.uid))}
+                  items={headerColumns.filter(
+                    (c: any) =>
+                      !["actions", "teams", "permission"].includes(c.uid),
+                  )}
                 >
                   {(item: any) => (
                     <DropdownItem
@@ -556,7 +592,9 @@ export default function UserTable({ users }: UserProps) {
                         setSortDescriptor({
                           column: item.uid,
                           direction:
-                            sortDescriptor.direction === "ascending" ? "descending" : "ascending",
+                            sortDescriptor.direction === "ascending"
+                              ? "descending"
+                              : "ascending",
                         });
                       }}
                     >
@@ -586,12 +624,16 @@ export default function UserTable({ users }: UserProps) {
                 <DropdownMenu
                   disallowEmptySelection
                   aria-label="Columns"
-                  items={columns.filter((c: any) => !["actions"].includes(c.uid))}
+                  items={columns.filter(
+                    (c: any) => !["actions"].includes(c.uid),
+                  )}
                   selectedKeys={visibleColumns}
                   selectionMode="multiple"
                   onSelectionChange={setVisibleColumns}
                 >
-                  {(item: any) => <DropdownItem key={item.uid}>{item.name}</DropdownItem>}
+                  {(item: any) => (
+                    <DropdownItem key={item.uid}>{item.name}</DropdownItem>
+                  )}
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -611,7 +653,10 @@ export default function UserTable({ users }: UserProps) {
                 <Button
                   className="bg-default-100 text-default-800"
                   endContent={
-                    <Icon className="text-default-400" icon="solar:alt-arrow-down-linear" />
+                    <Icon
+                      className="text-default-400"
+                      icon="solar:alt-arrow-down-linear"
+                    />
                   }
                   size="sm"
                   variant="flat"
@@ -651,11 +696,19 @@ export default function UserTable({ users }: UserProps) {
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
           <h1 className="text-2xl font-[700] leading-[32px]">Users</h1>
-          <Chip className="hidden items-center text-default-500 sm:flex" size="sm" variant="flat">
+          <Chip
+            className="hidden items-center text-default-500 sm:flex"
+            size="sm"
+            variant="flat"
+          >
             {users.length}
           </Chip>
         </div>
-        <Button color="primary" onPress={() => openModal()} endContent={<Icon icon="solar:add-circle-bold" width={20} />}>
+        <Button
+          color="primary"
+          endContent={<Icon icon="solar:add-circle-bold" width={20} />}
+          onPress={() => openModal()}
+        >
           New User
         </Button>
       </div>
@@ -681,63 +734,87 @@ export default function UserTable({ users }: UserProps) {
               : `${filterSelectedKeys.size} of ${filteredItems.length} selected`}
           </span>
           <div className="flex items-center gap-3">
-            <Button isDisabled={page === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+            <Button
+              isDisabled={page === 1}
+              size="sm"
+              variant="flat"
+              onPress={onPreviousPage}
+            >
               Previous
             </Button>
-            <Button isDisabled={page === pages} size="sm" variant="flat" onPress={onNextPage}>
+            <Button
+              isDisabled={page === pages}
+              size="sm"
+              variant="flat"
+              onPress={onNextPage}
+            >
               Next
             </Button>
           </div>
         </div>
       </div>
     );
-  }, [filterSelectedKeys, page, pages, filteredItems.length, onPreviousPage, onNextPage]);
+  }, [
+    filterSelectedKeys,
+    page,
+    pages,
+    filteredItems.length,
+    onPreviousPage,
+    onNextPage,
+  ]);
 
   const handleMemberClick = useMemoizedCallback(() => {
     setSortDescriptor({
       column: "username",
-      direction: sortDescriptor.direction === "ascending" ? "descending" : "ascending",
+      direction:
+        sortDescriptor.direction === "ascending" ? "descending" : "ascending",
     });
   });
 
   return (
     <div className="h-full w-full p-6">
       {topBar}
-      <Modal isDismissable={false} backdrop={backdrop} isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange} size="xl">
+      <Modal
+        backdrop={backdrop}
+        isDismissable={false}
+        isOpen={isOpen}
+        placement="top-center"
+        size="xl"
+        onOpenChange={onOpenChange}
+      >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Rent New Model</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Rent New Model
+              </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap items-end md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <Input
-                    isRequired
                     isClearable
+                    isRequired
                     errorMessage="Please enter a valid username"
                     label="Id"
                     name="username"
                     type="text"
-
                     variant="bordered"
                   />
                   <Input
-                    isRequired
                     isClearable
+                    isRequired
                     label="Email"
-
                     type="email"
                     variant="bordered"
                   />
                 </div>
                 <Textarea
-                  isRequired
                   disableAnimation
                   disableAutosize
+                  isRequired
                   classNames={{
                     input: "resize-y min-h-[40px]",
                   }}
                   label="Description"
-
                   variant="bordered"
                 />
                 {/* <Input
@@ -751,34 +828,46 @@ export default function UserTable({ users }: UserProps) {
                 /> */}
                 <div className="flex w-full flex-wrap items-end md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <Input
-                    isRequired
                     isClearable
+                    isRequired
                     errorMessage="Please enter a valid username"
                     label="Ip"
                     name="username"
                     type="text"
-
                     variant="bordered"
                   />
                   <Input
                     isRequired
                     label="Port"
-
                     type="number"
                     variant="bordered"
                   />
-                  <Select className="max-w-xs" label="SSH Key" variant="bordered">
+                  <Select
+                    className="max-w-xs"
+                    label="SSH Key"
+                    variant="bordered"
+                  >
                     <SelectItem key="1">1</SelectItem>
                     <SelectItem key="2">2</SelectItem>
                   </Select>
                 </div>
 
                 <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select isRequired className="max-w-xs" label="GPU" variant="bordered">
+                  <Select
+                    isRequired
+                    className="max-w-xs"
+                    label="GPU"
+                    variant="bordered"
+                  >
                     <SelectItem key="1">1</SelectItem>
                     <SelectItem key="2">2</SelectItem>
                   </Select>
-                  <Select isRequired className="max-w-xs" label="CPU" variant="bordered">
+                  <Select
+                    isRequired
+                    className="max-w-xs"
+                    label="CPU"
+                    variant="bordered"
+                  >
                     <SelectItem key="1">1</SelectItem>
                     <SelectItem key="2">2</SelectItem>
                   </Select>
@@ -788,28 +877,30 @@ export default function UserTable({ users }: UserProps) {
                   <Input
                     isRequired
                     label="RAM"
-
                     type="number"
                     variant="bordered"
                   />
                   <Input
                     isRequired
                     label="CPU"
-
                     type="number"
                     variant="bordered"
                   />
                   <Input
                     isRequired
                     label="HARD"
-
                     type="number"
                     variant="bordered"
                   />
                 </div>
 
                 <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select isRequired className="max-w-xs" label="Provider" variant="bordered">
+                  <Select
+                    isRequired
+                    className="max-w-xs"
+                    label="Provider"
+                    variant="bordered"
+                  >
                     <SelectItem key="1">Shadeform</SelectItem>
                     <SelectItem key="2">Cloudzy</SelectItem>
                   </Select>
@@ -842,22 +933,34 @@ export default function UserTable({ users }: UserProps) {
                 <Button color="danger" onPress={onClose}>
                   Unstake
                 </Button>
-
               </ModalFooter>
             </>
           )}
         </ModalContent>
       </Modal>
-      <Modal isDismissable={false} backdrop={backdrop} isOpen={isRemoveModalOpen} placement="top-center" onOpenChange={onRemoveModalChange}>
+      <Modal
+        backdrop={backdrop}
+        isDismissable={false}
+        isOpen={isRemoveModalOpen}
+        placement="top-center"
+        onOpenChange={onRemoveModalChange}
+      >
         <ModalContent>
           {(onRemoveModalClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Warning</ModalHeader>
               <ModalBody>
-                <Alert description="Are you sure you want to delete this user?" variant="faded" />
+                <Alert
+                  description="Are you sure you want to delete this user?"
+                  variant="faded"
+                />
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onRemoveModalClose}>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onRemoveModalClose}
+                >
                   Close
                 </Button>
                 <Button color="primary" onPress={onRemoveModalClose}>
@@ -869,21 +972,23 @@ export default function UserTable({ users }: UserProps) {
         </ModalContent>
       </Modal>
       <Modal
-        isDismissable={false}
         backdrop={backdrop}
-        isOpen={isPermissionModalOpen}
-        placement="top-center"
-        onOpenChange={onPermissionModalChange}
         classNames={{
           body: "rounded-[15px] border-1 border-white m-[9px] mx-5 444",
           backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
         }}
+        isDismissable={false}
+        isOpen={isPermissionModalOpen}
+        placement="top-center"
         size="2xl"
+        onOpenChange={onPermissionModalChange}
       >
         <ModalContent>
           {(onPermissionModalChange) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Set Permission</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Set Permission
+              </ModalHeader>
               <ModalBody className="max-h-[500px] overflow-auto max-w-[800px]">
                 {/* <Table aria-label="Permissions Table">
                   <TableHeader>
@@ -961,23 +1066,47 @@ export default function UserTable({ users }: UserProps) {
                   <TableBody loadingContent={<Spinner label="Loading..." />}>
                     {mockUsers.map((user) => (
                       <TableRow key={user.id}>
-                        <TableCell className="font-semibold">{user.name}</TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
+                        <TableCell className="font-semibold">
+                          {user.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onPermissionModalChange}>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onPermissionModalChange}
+                >
                   Close
                 </Button>
                 <Button color="primary" onPress={onPermissionModalChange}>
@@ -1010,7 +1139,9 @@ export default function UserTable({ users }: UserProps) {
               key={column.uid}
               align={column.uid === "permission" ? "center" : "start"}
               className={cn([
-                column.uid === "actions" ? "flex items-center px-[20px] justify-center" : "",
+                column.uid === "actions"
+                  ? "flex items-center px-[20px] justify-center"
+                  : "",
               ])}
             >
               {column.uid === "username" ? (
@@ -1046,7 +1177,9 @@ export default function UserTable({ users }: UserProps) {
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
-              {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
             </TableRow>
           )}
         </TableBody>

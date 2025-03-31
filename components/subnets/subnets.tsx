@@ -1,9 +1,9 @@
 "use client";
 
 import type { Selection, SortDescriptor } from "@heroui/react";
-import type { ColumnsKey, StatusOptions, Subnets } from "./data";
-import { columns, INITIAL_VISIBLE_COLUMNS } from "./data";
+import type { ColumnsKey, Subnets } from "./data";
 import type { Key } from "@react-types/shared";
+
 import {
   Dropdown,
   DropdownTrigger,
@@ -24,7 +24,6 @@ import {
   Pagination,
   Divider,
   Tooltip,
-  useButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -42,12 +41,13 @@ import {
   Spinner,
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useRef, useCallback, useState, useEffect } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
+
+import { columns, INITIAL_VISIBLE_COLUMNS } from "./data";
 import { ArrowDownIcon } from "./arrow-down";
 import { ArrowUpIcon } from "./arrow-up";
-
 import { useMemoizedCallback } from "./use-memoized-callback";
 
 interface SubnetProps {
@@ -60,7 +60,13 @@ interface UserIconProps extends React.SVGProps<SVGSVGElement> {
   height?: number;
   width?: number;
 }
-export const UserIcon: React.FC<UserIconProps> = ({ fill = "currentColor", size, height, width, ...props }) => {
+export const UserIcon: React.FC<UserIconProps> = ({
+  fill = "currentColor",
+  size,
+  height,
+  width,
+  ...props
+}) => {
   return (
     <svg
       data-name="Iconly/Curved/Profile"
@@ -82,12 +88,14 @@ export const UserIcon: React.FC<UserIconProps> = ({ fill = "currentColor", size,
           d="M11.845 21.662C8.153 21.662 5 21.088 5 18.787s3.133-4.425 6.845-4.425c3.692 0 6.845 2.1 6.845 4.4s-3.134 2.9-6.845 2.9z"
           data-name="Stroke 1"
         />
-        <path d="M11.837 11.174a4.372 4.372 0 10-.031 0z" data-name="Stroke 3" />
+        <path
+          d="M11.837 11.174a4.372 4.372 0 10-.031 0z"
+          data-name="Stroke 3"
+        />
       </g>
     </svg>
   );
 };
-
 
 export const userRoles = [
   { key: "admin", label: "Admin" },
@@ -139,14 +147,14 @@ export const LockIcon = (props: any) => {
 };
 
 export default function SubnetTable({ users }: SubnetProps) {
-  const [selectedRow, setSelectedRow] = useState<any>(null);
-  const showSubnetDetails = (item: any) => {
-    setSelectedRow((prevRow: { id: any; }) => (prevRow && prevRow.id === item.id ? null : item));
+  // const [selectedRow, setSelectedRow] = useState<any>(null);
+  const showSubnetDetails = () => {
+    // setSelectedRow((prevRow: { id: any }) =>
+    //   prevRow && prevRow.id === item.id ? null : item,
+    // );
     showSubnetDetailModal();
-    console.log('item', item)
   };
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isRemoveModalOpen,
     onOpenChange: onRemoveModalChange,
@@ -157,58 +165,55 @@ export default function SubnetTable({ users }: SubnetProps) {
   const {
     isOpen: isShowSubnetDetails,
     onOpenChange: onShowSubnetDetails,
-    onClose: closeSubnetDetailModal,
+    // onClose: closeSubnetDetailModal,
     onOpen: showSubnetDetailModal,
   } = useDisclosure();
 
   const {
     isOpen: isShowCreateNewSubnetModal,
     onOpenChange: onCreateNewSubnetModal,
-    onClose: closeCreateNewSubnetModal,
+    // onClose: closeCreateNewSubnetModal,
     onOpen: showCreateNewSubnetModal,
   } = useDisclosure();
 
-  const [mockUsers, setMockUsers] = useState([
-    { id: 1, name: "Josh", instanceRead: true, instanceWrite: false, instanceDelete: false, minerRead: false, minerWrite: true, minerDelete: false },
+  const [mockUsers] = useState([
+    {
+      id: 1,
+      name: "Josh",
+      instanceRead: true,
+      instanceWrite: false,
+      instanceDelete: false,
+      minerRead: false,
+      minerWrite: true,
+      minerDelete: false,
+    },
   ]);
-  const handleToggle = (userId: number, field: keyof typeof mockUsers[0]) => {
-    setMockUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === userId ? { ...user, [field]: !user[field] } : user
-      )
-    );
-  };
+  // const handleToggle = (userId: number, field: keyof (typeof mockUsers)[0]) => {
+  //   setMockUsers((prevUsers) =>
+  //     prevUsers.map((user) =>
+  //       user.id === userId ? { ...user, [field]: !user[field] } : user,
+  //     ),
+  //   );
+  // };
 
-  const [backdrop, setBackdrop] = React.useState<"blur" | "transparent" | "opaque">("blur");
+  const [backdrop] = React.useState<"blur" | "transparent" | "opaque">("blur");
 
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
+    new Set(INITIAL_VISIBLE_COLUMNS),
+  );
   const [rowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "username",
     direction: "ascending",
   });
-  const [selectedRole, setSelectedRole] = useState("");
   const [workerTypeFilter, setWorkerTypeFilter] = React.useState("all");
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [startDateFilter, setStartDateFilter] = React.useState("all");
   // const [avatar, setAvatar] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState('');
-  const [isRemove, setIsRemove] = useState(false);
-  const [showPermission, setPermissionModal] = useState(false);
-  // test
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setAvatarPreview(previewUrl);
-    }
-  };
-  const handleSelectRole = (e: any) => {
-    setSelectedRole(e.target.value);
-  }
+  // const [showPermission, setPermissionModal] = useState(false);
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -229,16 +234,19 @@ export default function SubnetTable({ users }: SubnetProps) {
   const itemFilter = useCallback(
     (col: Subnets) => {
       let allWorkerType = workerTypeFilter === "all";
-      let allStatus = statusFilter === "all";
       let allStartDate = startDateFilter === "all";
 
       return (
-        (allWorkerType) &&
+        allWorkerType &&
         // (allStatus || statusFilter === col.status.toLowerCase()) &&
         (allStartDate ||
           new Date(
             new Date().getTime() -
-            +(startDateFilter.match(/(\d+)(?=Days)/)?.[0] ?? 0) * 24 * 60 * 60 * 1000,
+              +(startDateFilter.match(/(\d+)(?=Days)/)?.[0] ?? 0) *
+                24 *
+                60 *
+                60 *
+                1000,
           ) <= new Date(col.createdAt))
       );
     },
@@ -275,9 +283,11 @@ export default function SubnetTable({ users }: SubnetProps) {
       let first = a[col];
       let second = b[col];
       let cmp;
+
       if (col === "username") {
         const firstStr = first.toString();
         const secondStr = second.toString();
+
         cmp = firstStr < secondStr ? -1 : firstStr > secondStr ? 1 : 0;
       }
 
@@ -306,102 +316,104 @@ export default function SubnetTable({ users }: SubnetProps) {
     return resultKeys;
   }, [selectedKeys, filteredItems, filterValue]);
 
-  const eyesRef = useRef<HTMLButtonElement | null>(null);
-  const editRef = useRef<HTMLButtonElement | null>(null);
-  const deleteRef = useRef<HTMLButtonElement | null>(null);
-  const { getButtonProps: getEyesProps } = useButton({ ref: eyesRef });
-  const { getButtonProps: getEditProps } = useButton({ ref: editRef });
-  const { getButtonProps: getDeleteProps } = useButton({ ref: deleteRef });
   const getMemberInfoProps = useMemoizedCallback(() => ({
     onClick: handleMemberClick,
   }));
 
   const openModal = () => {
-    setAvatarPreview('');
     showCreateNewSubnetModal();
-  }
+  };
 
-  const setPermission = () => {
-    onPermissionModalChange();
-    setPermissionModal(true);
-  }
-  const renderCell = useMemoizedCallback((user: Subnets, columnKey: React.Key) => {
-    const userKey = columnKey as ColumnsKey;
+  const renderCell = useMemoizedCallback(
+    (user: Subnets, columnKey: React.Key) => {
+      const userKey = columnKey as ColumnsKey;
 
-    const cellValue = user[userKey as unknown as keyof Subnets] as unknown as string;
-    switch (userKey) {
-      case "username":
-        return (
-          <User
-            avatarProps={{ radius: "lg", src: user[userKey].avatar }}
-            classNames={{
-              name: "text-default-foreground",
-              description: "text-default-500",
-            }}
-            description={user[userKey].email}
-            name={user[userKey].name}
-          >
-            {user[userKey].email}
-          </User>
-        );
-      case "createdAt":
-        return (
-          <div className="flex items-center gap-1">
-            <p className="text-nowrap text-small capitalize text-default-foreground">
-              {new Intl.DateTimeFormat("en-US", {
-                month: "2-digit",
-                day: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              }).format(cellValue as unknown as Date)}
-            </p>
-          </div>
-        );
-      case "emission":
-        return (
-          <div className="flex items-center gap-2">
-            <p className="text-nowrap text-small text-default-foreground">{user[userKey]}</p>
-          </div>
-        );
-      case "engineers":
-        return (
-          <div className="float-start flex gap-1">
-            {user[userKey].map((team: any, index: number) => {
-              if (index < 3) {
-                return (
-                  <Chip
-                    key={team}
-                    className="rounded-xl bg-default-100 px-[6px] capitalize text-default-800"
-                    size="sm"
-                    variant="flat"
-                    color="primary"
-                  >
-                    {team}
-                  </Chip>
-                );
-              }
-              if (index < 4) {
-                return (
-                  <Chip key={team} className="text-default-500" size="sm" variant="flat" color="primary">
-                    {`+${team.length - 3}`}
-                  </Chip>
-                );
-              }
+      const cellValue = user[
+        userKey as unknown as keyof Subnets
+      ] as unknown as string;
 
-              return null;
-            })}
-          </div>
-        );
-      case "reg_cost":
-        return <div className="text-default-foreground">{cellValue}</div>;
-      // case "status":
-      //   return <Status status={cellValue as StatusOptions} />;
-      default:
-        return cellValue;
-    }
-  });
+      switch (userKey) {
+        case "username":
+          return (
+            <User
+              avatarProps={{ radius: "lg", src: user[userKey].avatar }}
+              classNames={{
+                name: "text-default-foreground",
+                description: "text-default-500",
+              }}
+              description={user[userKey].email}
+              name={user[userKey].name}
+            >
+              {user[userKey].email}
+            </User>
+          );
+        case "createdAt":
+          return (
+            <div className="flex items-center gap-1">
+              <p className="text-nowrap text-small capitalize text-default-foreground">
+                {new Intl.DateTimeFormat("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                }).format(cellValue as unknown as Date)}
+              </p>
+            </div>
+          );
+        case "emission":
+          return (
+            <div className="flex items-center gap-2">
+              <p className="text-nowrap text-small text-default-foreground">
+                {user[userKey]}
+              </p>
+            </div>
+          );
+        case "engineers":
+          return (
+            <div className="float-start flex gap-1">
+              {user[userKey].map((team: any, index: number) => {
+                if (index < 3) {
+                  return (
+                    <Chip
+                      key={team}
+                      className="rounded-xl bg-default-100 px-[6px] capitalize text-default-800"
+                      color="primary"
+                      size="sm"
+                      variant="flat"
+                    >
+                      {team}
+                    </Chip>
+                  );
+                }
+                if (index < 4) {
+                  return (
+                    <Chip
+                      key={team}
+                      className="text-default-500"
+                      color="primary"
+                      size="sm"
+                      variant="flat"
+                    >
+                      {`+${team.length - 3}`}
+                    </Chip>
+                  );
+                }
+
+                return null;
+              })}
+            </div>
+          );
+        case "reg_cost":
+          return <div className="text-default-foreground">{cellValue}</div>;
+        // case "status":
+        //   return <Status status={cellValue as StatusOptions} />;
+        default:
+          return cellValue;
+      }
+    },
+  );
 
   const onNextPage = useMemoizedCallback(() => {
     if (page < pages) {
@@ -427,7 +439,9 @@ export default function SubnetTable({ users }: SubnetProps) {
   const onSelectionChange = useMemoizedCallback((keys: Selection) => {
     if (keys === "all") {
       if (filterValue) {
-        const resultKeys = new Set(filteredItems.map((item) => String(item.id)));
+        const resultKeys = new Set(
+          filteredItems.map((item) => String(item.id)),
+        );
 
         setSelectedKeys(resultKeys);
       } else {
@@ -463,7 +477,9 @@ export default function SubnetTable({ users }: SubnetProps) {
           <div className="flex items-center gap-4">
             <Input
               className="min-w-[200px]"
-              endContent={<SearchIcon className="text-default-400" width={16} />}
+              endContent={
+                <SearchIcon className="text-default-400" width={16} />
+              }
               placeholder="Search"
               size="sm"
               value={filterValue}
@@ -476,7 +492,11 @@ export default function SubnetTable({ users }: SubnetProps) {
                     className="bg-default-100 text-default-800"
                     size="sm"
                     startContent={
-                      <Icon className="text-default-400" icon="solar:tuning-2-linear" width={16} />
+                      <Icon
+                        className="text-default-400"
+                        icon="solar:tuning-2-linear"
+                        width={16}
+                      />
                     }
                   >
                     Filter
@@ -494,7 +514,11 @@ export default function SubnetTable({ users }: SubnetProps) {
                       <Radio value="contractor">Contractor</Radio>
                     </RadioGroup>
 
-                    <RadioGroup label="Status" value={statusFilter} onValueChange={setStatusFilter}>
+                    <RadioGroup
+                      label="Status"
+                      value={statusFilter}
+                      onValueChange={setStatusFilter}
+                    >
                       <Radio value="all">All</Radio>
                       <Radio value="active">Active</Radio>
                       <Radio value="inactive">Inactive</Radio>
@@ -523,7 +547,11 @@ export default function SubnetTable({ users }: SubnetProps) {
                     className="bg-default-100 text-default-800"
                     size="sm"
                     startContent={
-                      <Icon className="text-default-400" icon="solar:sort-linear" width={16} />
+                      <Icon
+                        className="text-default-400"
+                        icon="solar:sort-linear"
+                        width={16}
+                      />
                     }
                   >
                     Sort
@@ -531,7 +559,10 @@ export default function SubnetTable({ users }: SubnetProps) {
                 </DropdownTrigger>
                 <DropdownMenu
                   aria-label="Sort"
-                  items={headerColumns.filter((c: any) => !["actions", "teams", "permission"].includes(c.uid))}
+                  items={headerColumns.filter(
+                    (c: any) =>
+                      !["actions", "teams", "permission"].includes(c.uid),
+                  )}
                 >
                   {(item: any) => (
                     <DropdownItem
@@ -540,7 +571,9 @@ export default function SubnetTable({ users }: SubnetProps) {
                         setSortDescriptor({
                           column: item.uid,
                           direction:
-                            sortDescriptor.direction === "ascending" ? "descending" : "ascending",
+                            sortDescriptor.direction === "ascending"
+                              ? "descending"
+                              : "ascending",
                         });
                       }}
                     >
@@ -570,12 +603,16 @@ export default function SubnetTable({ users }: SubnetProps) {
                 <DropdownMenu
                   disallowEmptySelection
                   aria-label="Columns"
-                  items={columns.filter((c: any) => !["actions"].includes(c.uid))}
+                  items={columns.filter(
+                    (c: any) => !["actions"].includes(c.uid),
+                  )}
                   selectedKeys={visibleColumns}
                   selectionMode="multiple"
                   onSelectionChange={setVisibleColumns}
                 >
-                  {(item: any) => <DropdownItem key={item.uid}>{item.name}</DropdownItem>}
+                  {(item: any) => (
+                    <DropdownItem key={item.uid}>{item.name}</DropdownItem>
+                  )}
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -606,11 +643,19 @@ export default function SubnetTable({ users }: SubnetProps) {
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
           <h1 className="text-2xl font-[700] leading-[32px]">Subnets</h1>
-          <Chip className="hidden items-center text-default-500 sm:flex" size="sm" variant="flat">
+          <Chip
+            className="hidden items-center text-default-500 sm:flex"
+            size="sm"
+            variant="flat"
+          >
             {users.length}
           </Chip>
         </div>
-        <Button color="primary" onPress={() => openModal()} endContent={<Icon icon="solar:add-circle-bold" width={20} />}>
+        <Button
+          color="primary"
+          endContent={<Icon icon="solar:add-circle-bold" width={20} />}
+          onPress={() => openModal()}
+        >
           New Subnet
         </Button>
       </div>
@@ -636,22 +681,40 @@ export default function SubnetTable({ users }: SubnetProps) {
               : `${filterSelectedKeys.size} of ${filteredItems.length} selected`}
           </span>
           <div className="flex items-center gap-3">
-            <Button isDisabled={page === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+            <Button
+              isDisabled={page === 1}
+              size="sm"
+              variant="flat"
+              onPress={onPreviousPage}
+            >
               Previous
             </Button>
-            <Button isDisabled={page === pages} size="sm" variant="flat" onPress={onNextPage}>
+            <Button
+              isDisabled={page === pages}
+              size="sm"
+              variant="flat"
+              onPress={onNextPage}
+            >
               Next
             </Button>
           </div>
         </div>
       </div>
     );
-  }, [filterSelectedKeys, page, pages, filteredItems.length, onPreviousPage, onNextPage]);
+  }, [
+    filterSelectedKeys,
+    page,
+    pages,
+    filteredItems.length,
+    onPreviousPage,
+    onNextPage,
+  ]);
 
   const handleMemberClick = useMemoizedCallback(() => {
     setSortDescriptor({
       column: "username",
-      direction: sortDescriptor.direction === "ascending" ? "descending" : "ascending",
+      direction:
+        sortDescriptor.direction === "ascending" ? "descending" : "ascending",
     });
   });
 
@@ -661,64 +724,67 @@ export default function SubnetTable({ users }: SubnetProps) {
 
       {/* Create New Subnet Modal */}
       <Modal
-        isDismissable={false}
         backdrop={backdrop}
-        isOpen={isShowCreateNewSubnetModal}
-        placement="top-center"
-        onOpenChange={onCreateNewSubnetModal}
-        size="xl"
         classNames={{
           body: "rounded-[15px] border-1 m-[9px] m-5 py-5",
         }}
+        isDismissable={false}
+        isOpen={isShowCreateNewSubnetModal}
+        placement="top-center"
+        size="xl"
+        onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
           {(closeCreateNewSubnetModal) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Create New Subnet</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Create New Subnet
+              </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <Input
-                    isRequired
                     key="subnet_no"
+                    isRequired
                     label="Subnet No"
                     labelPlacement="outside-left"
                     type="text"
                   />
 
                   <Input
+                    key="subnet_name"
                     isRequired
                     label="Subnet Name"
                     labelPlacement="outside-left"
-                    key="subnet_name"
                     type="text"
                   />
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <Input
-                    isRequired
                     key="subnet_emission"
+                    isRequired
+                    endContent={<p>%</p>}
                     label="Subnet Emission"
                     labelPlacement="outside-left"
                     type="number"
-                    endContent={
-                      <p>%</p>
-                    }
                   />
                   <Input
-                    isRequired
                     key="reg_cost"
+                    isRequired
+                    endContent={<p>tao</p>}
                     label="Reg Cost"
                     labelPlacement="outside-left"
-                    endContent={
-                      <p>tao</p>
-                    }
                     type="number"
                   />
                 </div>
 
                 <div className="flex w-full flex-wrap md:flex-nowrap pl-2 mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select isRequired className="max-w-full" label="Engineers" labelPlacement="outside-left">
+                  <Select
+                    isRequired
+                    className="max-w-full"
+                    label="Engineers"
+                    labelPlacement="outside-left"
+                  >
                     <SelectItem key="1">1</SelectItem>
                     <SelectItem key="2">2</SelectItem>
                   </Select>
@@ -736,16 +802,29 @@ export default function SubnetTable({ users }: SubnetProps) {
           )}
         </ModalContent>
       </Modal>
-      <Modal isDismissable={false} backdrop={backdrop} isOpen={isRemoveModalOpen} placement="top-center" onOpenChange={onRemoveModalChange}>
+      <Modal
+        backdrop={backdrop}
+        isDismissable={false}
+        isOpen={isRemoveModalOpen}
+        placement="top-center"
+        onOpenChange={onRemoveModalChange}
+      >
         <ModalContent>
           {(onRemoveModalClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Warning</ModalHeader>
               <ModalBody>
-                <Alert description="Are you sure you want to delete this user?" variant="faded" />
+                <Alert
+                  description="Are you sure you want to delete this user?"
+                  variant="faded"
+                />
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onRemoveModalClose}>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onRemoveModalClose}
+                >
                   Close
                 </Button>
                 <Button color="primary" onPress={onRemoveModalClose}>
@@ -757,21 +836,23 @@ export default function SubnetTable({ users }: SubnetProps) {
         </ModalContent>
       </Modal>
       <Modal
-        isDismissable={false}
         backdrop={backdrop}
-        isOpen={isPermissionModalOpen}
-        placement="top-center"
-        onOpenChange={onPermissionModalChange}
         classNames={{
           body: "rounded-[15px] border-1 m-[9px] mx-5",
           backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
         }}
+        isDismissable={false}
+        isOpen={isPermissionModalOpen}
+        placement="top-center"
         size="2xl"
+        onOpenChange={onPermissionModalChange}
       >
         <ModalContent>
           {(onPermissionModalChange) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Set Permission</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Set Permission
+              </ModalHeader>
               <ModalBody className="max-h-[500px] overflow-auto max-w-[800px]">
                 <Table aria-label="Permissions Table">
                   <TableHeader>
@@ -818,23 +899,47 @@ export default function SubnetTable({ users }: SubnetProps) {
                   <TableBody loadingContent={<Spinner label="Loading..." />}>
                     {mockUsers.map((user) => (
                       <TableRow key={user.id}>
-                        <TableCell className="font-semibold">{user.name}</TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
+                        <TableCell className="font-semibold">
+                          {user.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox />
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onPermissionModalChange}>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onPermissionModalChange}
+                >
                   Close
                 </Button>
                 <Button color="primary" onPress={onPermissionModalChange}>
@@ -848,15 +953,28 @@ export default function SubnetTable({ users }: SubnetProps) {
 
       {/* Subnet Detail Modal */}
 
-      <Modal isDismissable={false} backdrop={backdrop} isOpen={isShowSubnetDetails} placement="top-center" onOpenChange={onShowSubnetDetails} size="xl">
+      <Modal
+        backdrop={backdrop}
+        isDismissable={false}
+        isOpen={isShowSubnetDetails}
+        placement="top-center"
+        size="xl"
+        onOpenChange={onShowSubnetDetails}
+      >
         <ModalContent>
           {(closeSubnetDetailModal) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Subnet Detail</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Subnet Detail
+              </ModalHeader>
               <ModalBody className="border-1 rounded-lg mx-4 p-4">
                 <div className="flex w-full flex-wrap items-end md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <p className="px-2">Github URL: </p>
-                  <Link isExternal showAnchorIcon href="https://github.com/heroui-inc/heroui">
+                  <Link
+                    isExternal
+                    showAnchorIcon
+                    href="https://github.com/heroui-inc/heroui"
+                  >
                     https://github.com/dmark1029
                   </Link>
                 </div>
@@ -865,63 +983,61 @@ export default function SubnetTable({ users }: SubnetProps) {
                   <Input
                     isReadOnly
                     className="max-w-[120px]"
+                    endContent={<p>tao</p>}
                     errorMessage="Please enter a valid username"
+                    labelPlacement="outside-left"
                     name="username"
                     type="text"
-                    labelPlacement="outside-left"
-                    endContent={
-                      <p>tao</p>
-                    }
-                    variant="bordered"
                     value="340"
+                    variant="bordered"
                   />
                   <div> = </div>
                   <Input
                     isReadOnly
                     className="max-w-[120px]"
                     labelPlacement="outside-left"
-                    type="number"
-                    variant="bordered"
-                    value="3.429"
                     startContent={
                       <div className="pointer-events-none flex items-center">
                         <span className="text-default-400 text-small">$</span>
                       </div>
                     }
+                    type="number"
+                    value="3.429"
+                    variant="bordered"
                   />
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <p className="px-2 w-20">Instances: </p>
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="healthy"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="success"
                     label="Healthy"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="9"
                   />
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="unhealthy"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="danger"
                     label="Unhealty"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="9"
                   />
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="Total"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="default"
                     label="Total"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="9"
                   />
@@ -929,35 +1045,35 @@ export default function SubnetTable({ users }: SubnetProps) {
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <p className="px-2 w-20">Wallets: </p>
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="healthy"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="success"
                     label="Healthy"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="8"
                   />
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="unhealthy"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="danger"
                     label="Unhealty"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="7"
                   />
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="Total"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="default"
                     label="Total"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="15"
                   />
@@ -965,35 +1081,35 @@ export default function SubnetTable({ users }: SubnetProps) {
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <p className="px-2 w-20">Miners: </p>
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="healthy"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="success"
                     label="Healthy"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="9"
                   />
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="unhealthy"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="danger"
                     label="Unhealty"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="9"
                   />
                   <Input
-                    isReadOnly
-                    size="sm"
                     key="Total"
+                    isReadOnly
                     className="max-w-[120px]"
                     color="default"
                     label="Total"
                     labelPlacement="outside-left"
+                    size="sm"
                     type="text"
                     value="9"
                   />
@@ -1005,20 +1121,18 @@ export default function SubnetTable({ users }: SubnetProps) {
                     label="Total Covering Incentive"
                     labelPlacement="inside"
                     type="number"
-                    variant="bordered"
                     value="46"
+                    variant="bordered"
                   />
                   <Input
                     isReadOnly
                     className="max-w-[190px]"
+                    endContent={<p>tao</p>}
                     label="Total Income Alpha"
                     labelPlacement="inside"
                     type="number"
-                    variant="bordered"
                     value="34"
-                    endContent={
-                      <p>tao</p>
-                    }
+                    variant="bordered"
                   />
                   <p>=</p>
                   <p>($ 34.5)</p>
@@ -1028,7 +1142,6 @@ export default function SubnetTable({ users }: SubnetProps) {
                 <Button color="danger" onPress={closeSubnetDetailModal}>
                   Close
                 </Button>
-
               </ModalFooter>
             </>
           )}
@@ -1054,7 +1167,9 @@ export default function SubnetTable({ users }: SubnetProps) {
               key={column.uid}
               align={column.uid === "permission" ? "center" : "start"}
               className={cn([
-                column.uid === "actions" ? "flex items-center px-[20px] justify-center" : "",
+                column.uid === "actions"
+                  ? "flex items-center px-[20px] justify-center"
+                  : "",
               ])}
             >
               {column.uid === "username" ? (
@@ -1089,16 +1204,14 @@ export default function SubnetTable({ users }: SubnetProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
-              {(columnKey) =>
-                <TableCell>
-                  {renderCell(item, columnKey)}
-                </TableCell>
-              }
+            <TableRow key={item.id} onClick={() => showSubnetDetails()}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
             </TableRow>
           )}
         </TableBody>
       </Table>
-    </div >
+    </div>
   );
 }

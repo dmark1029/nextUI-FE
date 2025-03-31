@@ -3,24 +3,23 @@ import { Link } from "@heroui/link";
 import { Snippet } from "@heroui/snippet";
 import { Code } from "@heroui/code";
 import { button as buttonStyles } from "@heroui/theme";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
+// import { useRouter } from "next/navigation";
+
 import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
-import { useEffect } from "react"
-import { useRouter } from "next/navigation";
-
 
 export default function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  // const { data: session, status } = useSession();
+  // const router = useRouter();
 
   // useEffect(() => {
   //   if (status === 'unauthenticated') {
   //     router.push('/signin');
   //   }
   // }, [status, router]);
-  
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl text-center justify-center">

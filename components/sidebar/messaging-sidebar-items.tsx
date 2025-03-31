@@ -1,7 +1,4 @@
-import { Chip } from "@heroui/react";
-import { Icon } from "@iconify/react";
-
-import { SidebarItemType, type SidebarItem } from "./sidebar";
+import { type SidebarItem } from "./sidebar";
 
 const items: SidebarItem[] = [
   // {
@@ -103,7 +100,6 @@ const items: SidebarItem[] = [
   //     },
   //   ],
   // },
-
 
   {
     key: "home",

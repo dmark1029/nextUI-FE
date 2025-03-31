@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const statusOptions = [
   { name: "Active", uid: "active" },
   { name: "Inactive", uid: "inactive" },
   { name: "Paused", uid: "paused" },
   { name: "Vacation", uid: "vacation" },
-];
+] as const;
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export type StatusOptions = (typeof statusOptions)[number]["name"];
 
@@ -206,9 +208,7 @@ const mockUsers: Users[] = [
   },
 ];
 
-
 // API Route using Next.js App Router
 export async function GET() {
-  console.log("GET API is called");
   return NextResponse.json(mockUsers, { status: 200 });
 }

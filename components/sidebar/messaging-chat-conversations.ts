@@ -1,4 +1,4 @@
-import type {MessagingChatMessageProps} from "./data";
+import type { MessagingChatMessageProps } from "./data";
 
 const messagingChatConversations: MessagingChatMessageProps[] = [
   {
@@ -99,7 +99,8 @@ const messagingChatConversations: MessagingChatMessageProps[] = [
   {
     avatar:
       "https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatars/3a906b3de8eaa53e14582edf5c918b5d.jpg",
-    message: "Sure, here is the error log. I hope this helps to find a solution.",
+    message:
+      "Sure, here is the error log. I hope this helps to find a solution.",
     name: "Taylor Smith",
     time: "16:40",
   },

@@ -2,26 +2,20 @@
 
 import React from "react";
 import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Link } from "@heroui/link";
-import { Divider } from "@heroui/divider";
 import { User } from "@heroui/user";
-import { Checkbox } from "@heroui/checkbox";
-import { Form} from "@heroui/form";
-import {Icon} from "@iconify/react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { Icon } from "@iconify/react";
+import { signIn } from "next-auth/react";
 
-import {AcmeIcon} from "./acme";
+import { AcmeIcon } from "./acme";
 
 export default function Component() {
-  const [isVisible, setIsVisible] = React.useState(false);
-  const { data: session, status } = useSession();
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  // const [isVisible, setIsVisible] = React.useState(false);
+  // const { data: session, status } = useSession();
+  // const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("handleSubmit");
-  };
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  // };
 
   return (
     <div className="relative flex h-full min-h-[48rem] w-full">
@@ -38,7 +32,9 @@ export default function Component() {
         <div className="flex w-full max-w-sm flex-col items-center gap-4 p-4">
           <div className="w-full text-left">
             <p className="pb-2 text-xl font-medium">Welcome Back</p>
-            <p className="text-small text-default-500">Log in to your account to continue</p>
+            <p className="text-small text-default-500">
+              Log in to your account to continue
+            </p>
           </div>
 
           <div className="flex w-full flex-col gap-2">
@@ -142,8 +138,8 @@ export default function Component() {
           <p className="w-full text-right text-2xl text-black/60">
             <span className="font-medium">“</span>
             <span className="font-normal italic">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eget augue nec massa
-              volutpat aliquet.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eget
+              augue nec massa volutpat aliquet.
             </span>
             <span className="font-medium">”</span>
           </p>

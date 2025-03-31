@@ -56,7 +56,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
     },
     ref,
   ) => {
-    const [selected, setSelected] = React.useState<React.Key>(defaultSelectedKey);
+    const [selected, setSelected] =
+      React.useState<React.Key>(defaultSelectedKey);
 
     const sectionClasses = {
       ...sectionClassesProp,
@@ -81,13 +82,16 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
     const renderNestItem = React.useCallback(
       (item: SidebarItem, index: number) => {
         const isNestType =
-          item.items && item.items?.length > 0 && item?.type === SidebarItemType.Nest;
+          item.items &&
+          item.items?.length > 0 &&
+          item?.type === SidebarItemType.Nest;
 
         if (isNestType) {
           delete item.href;
         }
         const itemKey = `${item.key}-${index}`;
         const accordionKey = `${item.key}-accordion-${index}`;
+
         return (
           <ListboxItem
             {...item}
@@ -102,7 +106,11 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                 },
               ),
             }}
-            endContent={isCompact || isNestType || hideEndContent ? null : item.endContent ?? null}
+            endContent={
+              isCompact || isNestType || hideEndContent
+                ? null
+                : (item.endContent ?? null)
+            }
             startContent={
               isCompact || isNestType ? null : item.icon ? (
                 <Icon
@@ -114,7 +122,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                   width={24}
                 />
               ) : (
-                item.startContent ?? null
+                (item.startContent ?? null)
               )
             }
             title={isCompact || isNestType ? null : item.title}
@@ -132,7 +140,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                       width={24}
                     />
                   ) : (
-                    item.startContent ?? null
+                    (item.startContent ?? null)
                   )}
                 </div>
               </Tooltip>
@@ -163,7 +171,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                         </span>
                       </div>
                     ) : (
-                      item.startContent ?? null
+                      (item.startContent ?? null)
                     )
                   }
                 >
@@ -193,15 +201,21 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
     const renderItem = React.useCallback(
       (item: SidebarItem, index: number) => {
         const isNestType =
-          item.items && item.items?.length > 0 && item?.type === SidebarItemType.Nest;
+          item.items &&
+          item.items?.length > 0 &&
+          item?.type === SidebarItemType.Nest;
+
         if (isNestType) {
           return renderNestItem(item, index);
         }
+
         return (
           <ListboxItem
             {...item}
             key={item.key}
-            endContent={isCompact || hideEndContent ? null : item.endContent ?? null}
+            endContent={
+              isCompact || hideEndContent ? null : (item.endContent ?? null)
+            }
             startContent={
               isCompact ? null : item.icon ? (
                 <Icon
@@ -213,7 +227,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                   width={24}
                 />
               ) : (
-                item.startContent ?? null
+                (item.startContent ?? null)
               )
             }
             textValue={item.title}
@@ -232,7 +246,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                       width={24}
                     />
                   ) : (
-                    item.startContent ?? null
+                    (item.startContent ?? null)
                   )}
                 </div>
               </Tooltip>
@@ -261,10 +275,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
             "px-3 min-h-11 rounded-large h-[44px] data-[selected=true]:bg-default-100",
             itemClasses?.base,
           ),
-          title: cn(
-            "text-small font-medium",
-            itemClasses?.title,
-          ),
+          title: cn("text-small font-medium", itemClasses?.title),
         }}
         items={items}
         selectedKeys={[selected] as unknown as Selection}
@@ -272,13 +283,16 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         variant="flat"
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0];
+
           setSelected(key as React.Key);
           onSelect?.(key as string);
         }}
         {...props}
       >
         {items.map((item: SidebarItem, index: number) => {
-          return item.items && item.items?.length > 0 && item?.type === SidebarItemType.Nest ? (
+          return item.items &&
+            item.items?.length > 0 &&
+            item?.type === SidebarItemType.Nest ? (
             renderNestItem(item, index)
           ) : item.items && item.items?.length > 0 ? (
             <ListboxSection

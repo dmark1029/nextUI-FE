@@ -1,18 +1,27 @@
 "use client";
-import SidebarDrawer from "@/components/sidebar/sidebar-drawer";
-import { Avatar, Button, cn, ScrollShadow, Spacer, Tooltip, useDisclosure } from "@heroui/react";
+import {
+  Avatar,
+  Button,
+  cn,
+  ScrollShadow,
+  Spacer,
+  Tooltip,
+  useDisclosure,
+} from "@heroui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { AcmeIcon } from "./signin/acme";
 import { Icon } from "@iconify/react";
+
+import { AcmeIcon } from "./signin/acme";
+
+import SidebarDrawer from "@/components/sidebar/sidebar-drawer";
 import SubSidebar from "@/components/sidebar/sidebar";
 import messagingSidebarItems from "@/components/sidebar/messaging-sidebar-items";
 
 export default function Sidebar() {
-  const [[page, direction], setPage] = useState([0, 0]);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [[page], setPage] = useState([0, 0]);
+  const { isOpen, onOpenChange } = useDisclosure();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { isOpen: isProfileSidebarOpen, onOpenChange: onProfileSidebarOpenChange } = useDisclosure();
 
   const isCompact = useMediaQuery("(max-width: 1024px)");
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -24,6 +33,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     const pathname = window.location.pathname;
+
     setIsSignInPage(pathname.includes("signin"));
   }, []);
 
@@ -42,8 +52,8 @@ export default function Sidebar() {
     [isCompact],
   );
   const [currentPath, setCurrentPath] = useState("");
+
   useEffect(() => {
-    console.log('123', currentPath)
     setCurrentPath(window.location.pathname);
   }, []);
 
@@ -76,9 +86,12 @@ export default function Sidebar() {
               <AcmeIcon className="text-background" />
             </div>
             <span
-              className={cn("w-full text-base font-bold uppercase opacity-100", {
-                "w-0 opacity-0": isCollapsed,
-              })}
+              className={cn(
+                "w-full text-base font-bold uppercase opacity-100",
+                {
+                  "w-0 opacity-0": isCollapsed,
+                },
+              )}
             >
               TaoMaker
             </span>
@@ -98,9 +111,17 @@ export default function Sidebar() {
               size="sm"
               src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatars/e1b8ec120710c09589a12c0004f85825.jpg"
             />
-            <div className={cn("flex max-w-full flex-col", { hidden: isCollapsed })}>
-              <p className="text-small font-medium text-foreground">Kate Moore</p>
-              <p className="text-tiny font-medium text-default-400">Customer Support</p>
+            <div
+              className={cn("flex max-w-full flex-col", {
+                hidden: isCollapsed,
+              })}
+            >
+              <p className="text-small font-medium text-foreground">
+                Kate Moore
+              </p>
+              <p className="text-tiny font-medium text-default-400">
+                Customer Support
+              </p>
             </div>
           </div>
 
@@ -116,7 +137,9 @@ export default function Sidebar() {
               }}
               items={messagingSidebarItems.map((item) => ({
                 ...item,
-                className: currentPath.includes(item.href ?? "") ? "dark:data-[selectable=true]:bg-white dark:data-[selectable=true]:text-black data-[selectable=true]:bg-default-700 data-[selectable=true]:text-white" : "", // Highlight selected item
+                className: currentPath.includes(item.href ?? "")
+                  ? "dark:data-[selectable=true]:bg-white dark:data-[selectable=true]:text-black data-[selectable=true]:bg-default-700 data-[selectable=true]:text-white"
+                  : "", // Highlight selected item
               }))}
             />
           </ScrollShadow>
@@ -145,7 +168,11 @@ export default function Sidebar() {
                 />
               </Button>
             )}
-            <Tooltip content="Support" isDisabled={!isCollapsed} placement="right">
+            <Tooltip
+              content="Support"
+              isDisabled={!isCollapsed}
+              placement="right"
+            >
               <Button
                 fullWidth
                 className={cn(
@@ -177,11 +204,18 @@ export default function Sidebar() {
                 )}
               </Button>
             </Tooltip>
-            <Tooltip content="Log Out" isDisabled={!isCollapsed} placement="right">
+            <Tooltip
+              content="Log Out"
+              isDisabled={!isCollapsed}
+              placement="right"
+            >
               <Button
-                className={cn("justify-start text-default-500 data-[hover=true]:text-foreground", {
-                  "justify-center": isCollapsed,
-                })}
+                className={cn(
+                  "justify-start text-default-500 data-[hover=true]:text-foreground",
+                  {
+                    "justify-center": isCollapsed,
+                  },
+                )}
                 isIconOnly={isCollapsed}
                 startContent={
                   isCollapsed ? null : (
@@ -209,6 +243,5 @@ export default function Sidebar() {
         </div>
       </SidebarDrawer>
     )
-
-  )
-};
+  );
+}
