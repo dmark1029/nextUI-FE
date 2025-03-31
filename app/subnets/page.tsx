@@ -10,7 +10,6 @@ export default function PricingPage() {
   useEffect(() => {
     fetchUsers();
   }, []);
-// 123
   const fetchUsers = async () => {
     try {
       const response = await axios.get<Subnets[]>("http://107.189.19.248:3000/api/subnets");
