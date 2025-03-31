@@ -4,7 +4,7 @@ pipeline {
     stage('Clone Repository') {
       steps {
         checkout([$class: 'GitSCM', 
-          branches: [[name: '*/SSO-signin']], 
+          branches: [[name: '*/main']], 
           userRemoteConfigs: [[url: 'https://github.com/dmark1029/nextUI-FE.git']]
         ])
       }

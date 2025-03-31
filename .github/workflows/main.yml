@@ -15,5 +15,5 @@ jobs:
 
       - name: Trigger Jenkins Build
         run: |
-          curl -X POST "http://107.189.19.248:8080/job/your-jenkins-job/build" \
+          curl -X POST "http://107.189.19.248:8080/job/taomaker-FE/build" \
           --user "your-jenkins-user:your-jenkins-api-token"
