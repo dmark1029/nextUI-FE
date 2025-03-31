@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 export default function PricingPage() {
   const [users, setUsers] = useState<Subnets[]>([]);
-  // 123
   useEffect(() => {
     fetchUsers();
   }, []);
