@@ -1,13 +1,13 @@
-import {DangerCircleSvg} from "./danger-circle";
-import {DefaultCircleSvg} from "./default-circle";
-import {SuccessCircleSvg} from "./success-circle";
-import {WarningCircleSvg} from "./warning-circle";
+import { DangerCircleSvg } from "./danger-circle";
+import { DefaultCircleSvg } from "./default-circle";
+import { SuccessCircleSvg } from "./success-circle";
+import { WarningCircleSvg } from "./warning-circle";
 
 export const statusOptions = [
-  {name: "Active", uid: "active"},
-  {name: "Inactive", uid: "inactive"},
-  {name: "Paused", uid: "paused"},
-  {name: "Vacation", uid: "vacation"},
+  { name: "Active", uid: "active" },
+  { name: "Inactive", uid: "inactive" },
+  { name: "Paused", uid: "paused" },
+  { name: "Vacation", uid: "vacation" },
 ] as const;
 
 export type StatusOptions = (typeof statusOptions)[number]["name"];
@@ -52,8 +52,8 @@ export type ColumnsKey =
   | "emission"
   | "reg_cost"
   | "engineers"
-  | "createdAt"
-  // | "teams"
+  | "createdAt";
+// | "teams"
 
 export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
   "id",
@@ -66,13 +66,13 @@ export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
 ];
 
 export const columns = [
-  {name: "No", uid: "id"},
-  {name: "Name", uid: "username", sortDirection: "ascending"},
-  {name: "Emission (%)", uid: "emission"},
-  {name: "Reg Cost (tao)", uid: "reg_cost"},
-  {name: "Engineers", uid: "engineers"},
+  { name: "No", uid: "id" },
+  { name: "Name", uid: "username", sortDirection: "ascending" },
+  { name: "Emission (%)", uid: "emission" },
+  { name: "Reg Cost (tao)", uid: "reg_cost" },
+  { name: "Engineers", uid: "engineers" },
   // {name: "Status", uid: "status", info: "The user's current status"},
-  {name: "Created At", uid: "createdAt"},
+  { name: "Created At", uid: "createdAt" },
 ];
 
 const names = [
@@ -151,7 +151,9 @@ const generateMockUserData = (count: number): Subnets[] => {
       //       : Math.random() > 0.5
       //         ? "Vacation"
       //         : "Inactive",
-      createdAt: new Date(new Date().getTime() - Math.random() * (24 * 60 * 60 * 1000 * 40)),
+      createdAt: new Date(
+        new Date().getTime() - Math.random() * (24 * 60 * 60 * 1000 * 40),
+      ),
       engineers: [
         "Design",
         "Product",

@@ -1,13 +1,13 @@
-import {DangerCircleSvg} from "./danger-circle";
-import {DefaultCircleSvg} from "./default-circle";
-import {SuccessCircleSvg} from "./success-circle";
-import {WarningCircleSvg} from "./warning-circle";
+import { DangerCircleSvg } from "./danger-circle";
+import { DefaultCircleSvg } from "./default-circle";
+import { SuccessCircleSvg } from "./success-circle";
+import { WarningCircleSvg } from "./warning-circle";
 
 export const statusOptions = [
-  {name: "Active", uid: "active"},
-  {name: "Inactive", uid: "inactive"},
-  {name: "Paused", uid: "paused"},
-  {name: "Vacation", uid: "vacation"},
+  { name: "Active", uid: "active" },
+  { name: "Inactive", uid: "inactive" },
+  { name: "Paused", uid: "paused" },
+  { name: "Vacation", uid: "vacation" },
 ] as const;
 
 export type StatusOptions = (typeof statusOptions)[number]["name"];
@@ -19,16 +19,16 @@ export const statusColorMap: Record<StatusOptions, JSX.Element> = {
   Vacation: WarningCircleSvg,
 };
 
-type Teams =
-  | "Design"
-  | "Product"
-  | "Marketing"
-  | "Management"
-  | "Engineering"
-  | "Sales"
-  | "Support"
-  | "Other"
-  | (string & {});
+// type Teams =
+//   | "Design"
+//   | "Product"
+//   | "Marketing"
+//   | "Management"
+//   | "Engineering"
+//   | "Sales"
+//   | "Support"
+//   | "Other"
+//   | (string & {});
 
 export type UserName = {
   avatar: string;
@@ -70,19 +70,19 @@ export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
   "createdAt",
   // "teams",
   "actions",
-  "permission"
+  "permission",
 ];
 
 export const columns = [
-  {name: "User ID", uid: "userID"},
-  {name: "Name", uid: "username", sortDirection: "ascending"},
-  {name: "Subnets", uid: "subnets"},
-  {name: "Role", uid: "role"},
+  { name: "User ID", uid: "userID" },
+  { name: "Name", uid: "username", sortDirection: "ascending" },
+  { name: "Subnets", uid: "subnets" },
+  { name: "Role", uid: "role" },
   // {name: "Status", uid: "status", info: "The user's current status"},
-  {name: "Created At", uid: "createdAt"},
+  { name: "Created At", uid: "createdAt" },
   // {name: "Teams", uid: "teams"},
-  {name: "Actions", uid: "actions"},
-  {name: "Permission", uid: "permission"},
+  { name: "Actions", uid: "actions" },
+  { name: "Permission", uid: "permission" },
 ];
 
 const names = [
@@ -138,7 +138,7 @@ const names = [
   "Yvette Fielding",
 ];
 
-const subnets = ["Argentina", "Portugal", "Germany", "United States", "China"]
+const subnets = ["Argentina", "Portugal", "Germany", "United States", "China"];
 
 const generateMockUserData = (count: number): Users[] => {
   const mockData: Users[] = [];
@@ -166,7 +166,9 @@ const generateMockUserData = (count: number): Users[] => {
       //       : Math.random() > 0.5
       //         ? "Vacation"
       //         : "Inactive",
-      createdAt: new Date(new Date().getTime() - Math.random() * (24 * 60 * 60 * 1000 * 40)),
+      createdAt: new Date(
+        new Date().getTime() - Math.random() * (24 * 60 * 60 * 1000 * 40),
+      ),
       // teams: [
       //   "Design",
       //   "Product",

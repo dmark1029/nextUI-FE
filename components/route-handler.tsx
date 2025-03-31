@@ -1,13 +1,16 @@
 "use client";
 
-import Sidebar from "@/app/sidebar";
 import { usePathname } from "next/navigation";
-import { Navbar } from "@/components/navbar";
+
 import { Footer } from "./footer";
+
+import Sidebar from "@/app/sidebar";
+import { Navbar } from "@/components/navbar";
 
 export function RouteHandler({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isSignInPage = pathname.includes('signin');
+  const isSignInPage = pathname.includes("signin");
+
   return (
     <div className="relative flex flex-col h-screen">
       <div className="flex flex-grow max-h-screen">

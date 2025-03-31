@@ -10,4 +10,5 @@ const authOptons: NextAuthOptions = {
 };
 
 const handler = (req: any, res: any) => NextAuth(req, res, authOptons);
+
 export { handler as GET, handler as POST };

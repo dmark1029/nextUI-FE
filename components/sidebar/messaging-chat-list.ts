@@ -44,7 +44,8 @@ const messagingChatList: MessagingChatListProps[] = [
     name: "Casey Williams",
     avatar:
       "https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatars/f4d075c1fa8155478e5bb26aaae69fc1.jpg",
-    message: "I've forgotten my password and can't seem to reset it using the website.",
+    message:
+      "I've forgotten my password and can't seem to reset it using the website.",
     count: 1,
     time: "22:04",
   },
@@ -142,7 +143,8 @@ const messagingChatList: MessagingChatListProps[] = [
     name: "Casey Williams",
     avatar:
       "https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatars/f4d075c1fa8155478e5bb26aaae69fc1.jpg",
-    message: "I've forgotten my password and can't seem to reset it using the website.",
+    message:
+      "I've forgotten my password and can't seem to reset it using the website.",
     count: 1,
     time: "22:04",
   },

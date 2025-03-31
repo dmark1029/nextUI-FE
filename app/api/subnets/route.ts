@@ -163,6 +163,5 @@ const mockSubnets: Subnets[] = [
 
 // API Route using Next.js App Router
 export async function GET() {
-  console.log("GET API is called");
   return NextResponse.json(mockSubnets, { status: 200 });
 }

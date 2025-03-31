@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Navbar as HeroUINavbar,
-  NavbarBrand,
   NavbarContent,
   NavbarItem,
   NavbarMenu,
@@ -11,14 +10,15 @@ import {
 } from "@heroui/navbar";
 import { Button, Link } from "@heroui/react";
 import { signOut } from "next-auth/react";
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { TwitterIcon, GithubIcon, DiscordIcon, Logo, SearchIcon } from "@/components/icons";
 import { Kbd } from "@heroui/kbd";
 import { Input } from "@heroui/input";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+
+import { GithubIcon, SearchIcon } from "@/components/icons";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { siteConfig } from "@/config/site";
 
 const menuItems = [
   "About",
@@ -33,8 +33,10 @@ const menuItems = [
 
 export const Navbar = () => {
   const [isSignInPage, setIsSignInPage] = useState(false);
+
   useEffect(() => {
     const pathname = window.location.pathname;
+
     setIsSignInPage(pathname.includes("signin"));
   }, []);
 
@@ -52,15 +54,19 @@ export const Navbar = () => {
       }
       labelPlacement="outside"
       placeholder="Search..."
-      startContent={<SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />}
+      startContent={
+        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+      }
       type="search"
     />
   );
+
   if (isSignInPage) {
     return null;
   }
+
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky" className="shrink-0">
+    <HeroUINavbar className="shrink-0" maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="center">
         {/* <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -70,7 +76,10 @@ export const Navbar = () => {
         </NavbarBrand> */}
         <ul className="hidden h-11 gap-4 rounded-full border-small border-default-200/20 bg-background/60 px-4 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50 md:flex w-1/2 justify-around">
           {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href} className="flex transition-transform duration-500 ease-in-out transform hover:scale-[1.2]">
+            <NavbarItem
+              key={item.href}
+              className="flex transition-transform duration-500 ease-in-out transform hover:scale-[1.2]"
+            >
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
@@ -86,7 +95,10 @@ export const Navbar = () => {
         </ul>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
+      <NavbarContent
+        className="hidden sm:flex basis-1/5 sm:basis-full"
+        justify="end"
+      >
         <NavbarItem className="hidden sm:flex gap-2">
           {/* <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
             <TwitterIcon className="text-default-500" />
@@ -126,7 +138,13 @@ export const Navbar = () => {
           {menuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                color={index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"}
+                color={
+                  index === 2
+                    ? "primary"
+                    : index === menuItems.length - 1
+                      ? "danger"
+                      : "foreground"
+                }
                 href="#"
                 size="lg"
               >
