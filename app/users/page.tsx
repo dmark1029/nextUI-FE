@@ -13,12 +13,12 @@ export default function PricingPage() {
   }, []);
 
   const fetchUsers = async () => {
-    /* eslint-disable no-console */
     try {
       const response = await axios.get<Users[]>(
         "http://107.189.19.248:3000/api/users",
       );
 
+      console.log("dasta:", response.data);
       setUsers(
         response.data.map((user) => ({
           ...user,
@@ -28,7 +28,6 @@ export default function PricingPage() {
     } catch (error) {
       console.error("Error fetching users:", error);
     }
-    /* eslint-enable no-console */
   };
 
   return users.length !== 0 ? (

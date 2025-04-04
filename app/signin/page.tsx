@@ -4,18 +4,19 @@ import React from "react";
 import { Button } from "@heroui/button";
 import { User } from "@heroui/user";
 import { Icon } from "@iconify/react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import { AcmeIcon } from "./acme";
 
 export default function Component() {
-  // const [isVisible, setIsVisible] = React.useState(false);
-  // const { data: session, status } = useSession();
-  // const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const { data: session, status } = useSession();
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  // };
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("handleSubmit");
+  };
 
   return (
     <div className="relative flex h-full min-h-[48rem] w-full">

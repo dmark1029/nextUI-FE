@@ -24,6 +24,7 @@ import {
   Pagination,
   Divider,
   Tooltip,
+  useButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -41,15 +42,16 @@ import {
   Spinner,
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useRef, useCallback, useState } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
 
+import { CopyText } from "../shared/copy-text";
+import { ArrowDownIcon } from "../shared/arrow-down";
+import { ArrowUpIcon } from "../shared/arrow-up";
+import { useMemoizedCallback } from "../shared/use-memoized-callback";
+
 import { columns, INITIAL_VISIBLE_COLUMNS } from "./data";
-import { CopyText } from "./copy-text";
-import { ArrowDownIcon } from "./arrow-down";
-import { ArrowUpIcon } from "./arrow-up";
-import { useMemoizedCallback } from "./use-memoized-callback";
 
 interface UserProps {
   users: Users[];
@@ -152,13 +154,13 @@ export default function UserTable({ users }: UserProps) {
   const {
     isOpen: isRemoveModalOpen,
     onOpen: onRemoveModalOpen,
-    // onClose: onRemoveModalClose,
+    onClose: onRemoveModalClose,
     onOpenChange: onRemoveModalChange,
     onOpenChange: onPermissionModalChange,
     isOpen: isPermissionModalOpen,
   } = useDisclosure();
 
-  const [mockUsers] = useState([
+  const [mockUsers, setMockUsers] = useState([
     {
       id: 1,
       name: "Josh",
@@ -170,15 +172,17 @@ export default function UserTable({ users }: UserProps) {
       minerDelete: false,
     },
   ]);
-  // const handleToggle = (userId: number, field: keyof (typeof mockUsers)[0]) => {
-  //   setMockUsers((prevUsers) =>
-  //     prevUsers.map((user) =>
-  //       user.id === userId ? { ...user, [field]: !user[field] } : user,
-  //     ),
-  //   );
-  // };
+  const handleToggle = (userId: number, field: keyof (typeof mockUsers)[0]) => {
+    setMockUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === userId ? { ...user, [field]: !user[field] } : user,
+      ),
+    );
+  };
 
-  const [backdrop] = React.useState<"blur" | "transparent" | "opaque">("blur");
+  const [backdrop, setBackdrop] = React.useState<
+    "blur" | "transparent" | "opaque"
+  >("blur");
 
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
@@ -191,12 +195,27 @@ export default function UserTable({ users }: UserProps) {
     column: "username",
     direction: "ascending",
   });
+  const [selectedRole, setSelectedRole] = useState("");
   const [workerTypeFilter, setWorkerTypeFilter] = React.useState("all");
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [startDateFilter, setStartDateFilter] = React.useState("all");
-  // const [isRemove, setIsRemove] = useState(false);
-  // const [showPermission, setPermissionModal] = useState(false);
+  const [avatar, setAvatar] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [isRemove, setIsRemove] = useState(false);
+  const [showPermission, setPermissionModal] = useState(false);
 
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+
+      setAvatarPreview(previewUrl);
+    }
+  };
+  const handleSelectRole = (e: any) => {
+    setSelectedRole(e.target.value);
+  };
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -217,6 +236,7 @@ export default function UserTable({ users }: UserProps) {
   const itemFilter = useCallback(
     (col: Users) => {
       let allWorkerType = workerTypeFilter === "all";
+      let allStatus = statusFilter === "all";
       let allStartDate = startDateFilter === "all";
 
       return (
@@ -299,22 +319,29 @@ export default function UserTable({ users }: UserProps) {
     return resultKeys;
   }, [selectedKeys, filteredItems, filterValue]);
 
+  const eyesRef = useRef<HTMLButtonElement | null>(null);
+  const editRef = useRef<HTMLButtonElement | null>(null);
+  const deleteRef = useRef<HTMLButtonElement | null>(null);
+  const { getButtonProps: getEyesProps } = useButton({ ref: eyesRef });
+  const { getButtonProps: getEditProps } = useButton({ ref: editRef });
+  const { getButtonProps: getDeleteProps } = useButton({ ref: deleteRef });
   const getMemberInfoProps = useMemoizedCallback(() => ({
     onClick: handleMemberClick,
   }));
 
   const openModal = () => {
     onOpen();
+    setAvatarPreview("");
   };
 
   const confirmDelete = () => {
     onRemoveModalOpen();
-    // setIsRemove(true);
+    setIsRemove(true);
   };
 
   const setPermission = () => {
     onPermissionModalChange();
-    // setPermissionModal(true);
+    setPermissionModal(true);
   };
   const renderCell = useMemoizedCallback(
     (user: Users, columnKey: React.Key) => {

@@ -36,43 +36,46 @@ export type UserName = {
   name: string;
 };
 
-export type Subnets = {
+export type Instances = {
   id: number;
+  subnetName: string;
   username: UserName;
-  emission: number;
-  reg_cost: number;
-  // status: StatusOptions;
-  createdAt: Date;
-  engineers: Engineers[];
+  type: string;
+  ip: string;
+  instanceId: string;
+  provider: string;
 };
 
 export type ColumnsKey =
   | "id"
+  | "subnetName"
   | "username"
-  | "emission"
-  | "reg_cost"
-  | "engineers"
-  | "createdAt";
-// | "teams"
+  | "type"
+  | "ip"
+  | "port"
+  | "instanceId"
+  | "provider";
 
 export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
   "id",
   "username",
-  "emission",
-  "reg_cost",
-  "engineers",
-  "createdAt",
-  // "teams",
+  "subnetName",
+  "type",
+  "ip",
+  "port",
+  "instanceId",
+  "provider",
 ];
 
 export const columns = [
   { name: "No", uid: "id" },
+  { name: "Subnet Name", uid: "subnetName", sortDirection: "ascending" },
   { name: "Name", uid: "username", sortDirection: "ascending" },
-  { name: "Emission (%)", uid: "emission" },
-  { name: "Reg Cost (tao)", uid: "reg_cost" },
-  { name: "Engineers", uid: "engineers" },
-  // {name: "Status", uid: "status", info: "The user's current status"},
-  { name: "Created At", uid: "createdAt" },
+  { name: "Type", uid: "type" },
+  { name: "IP", uid: "ip" },
+  { name: "Port", uid: "port" },
+  { name: "Instance ID", uid: "instanceId" },
+  { name: "Provider", uid: "provider" },
 ];
 
 const names = [
@@ -128,42 +131,22 @@ const names = [
   "Yvette Fielding",
 ];
 
-const generateMockUserData = (count: number): Subnets[] => {
-  const mockData: Subnets[] = [];
+const generateMockUserData = (count: number): Instances[] => {
+  const mockData: Instances[] = [];
 
   for (let i = 0; i < count; i++) {
-    const selectedName = names[Math.floor(Math.random() * names.length)];
-
-    const user: Subnets = {
-      id: i,
+    const user: Instances = {
+      id: 1,
       username: {
-        avatar: `https://i.pravatar.cc/150?img=${i}`,
-        email: `${selectedName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
-        name: selectedName,
+        avatar: "https://i.pravatar.cc/150?img=1",
+        email: "alice@example.com",
+        name: "Alice Johnson",
       },
-      emission: i / 100,
-      reg_cost: i / 100,
-      // status:
-      //   Math.random() > 0.5
-      //     ? "Active"
-      //     : Math.random() > 0.5
-      //       ? "Paused"
-      //       : Math.random() > 0.5
-      //         ? "Vacation"
-      //         : "Inactive",
-      createdAt: new Date(
-        new Date().getTime() - Math.random() * (24 * 60 * 60 * 1000 * 40),
-      ),
-      engineers: [
-        "Design",
-        "Product",
-        "Marketing",
-        "Management",
-        "Engineering",
-        "Sales",
-        "Support",
-        "Other",
-      ].filter(() => Math.random() > 0.5),
+      subnetName: "subnet-12345678",
+      type: "AWS",
+      ip: "237.84.2.178",
+      instanceId: "i-12345678",
+      provider: "AWS",
     };
 
     mockData.push(user);
@@ -172,4 +155,4 @@ const generateMockUserData = (count: number): Subnets[] => {
   return mockData;
 };
 
-export const users: Subnets[] = generateMockUserData(100);
+export const users: Instances[] = generateMockUserData(100);

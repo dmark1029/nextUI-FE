@@ -19,9 +19,13 @@ import SubSidebar from "@/components/sidebar/sidebar";
 import messagingSidebarItems from "@/components/sidebar/messaging-sidebar-items";
 
 export default function Sidebar() {
-  const [[page], setPage] = useState([0, 0]);
-  const { isOpen, onOpenChange } = useDisclosure();
+  const [[page, direction], setPage] = useState([0, 0]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const {
+    isOpen: isProfileSidebarOpen,
+    onOpenChange: onProfileSidebarOpenChange,
+  } = useDisclosure();
 
   const isCompact = useMediaQuery("(max-width: 1024px)");
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -54,6 +58,7 @@ export default function Sidebar() {
   const [currentPath, setCurrentPath] = useState("");
 
   useEffect(() => {
+    console.log("123", currentPath);
     setCurrentPath(window.location.pathname);
   }, []);
 
