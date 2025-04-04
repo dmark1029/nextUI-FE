@@ -1,7 +1,7 @@
-import { DangerCircleSvg } from "./danger-circle";
-import { DefaultCircleSvg } from "./default-circle";
-import { SuccessCircleSvg } from "./success-circle";
-import { WarningCircleSvg } from "./warning-circle";
+import { DangerCircleSvg } from "../shared/danger-circle";
+import { DefaultCircleSvg } from "../shared/default-circle";
+import { SuccessCircleSvg } from "../shared/success-circle";
+import { WarningCircleSvg } from "../shared/warning-circle";
 
 export const statusOptions = [
   { name: "Active", uid: "active" },
@@ -19,16 +19,16 @@ export const statusColorMap: Record<StatusOptions, JSX.Element> = {
   Vacation: WarningCircleSvg,
 };
 
-// type Teams =
-//   | "Design"
-//   | "Product"
-//   | "Marketing"
-//   | "Management"
-//   | "Engineering"
-//   | "Sales"
-//   | "Support"
-//   | "Other"
-//   | (string & {});
+type Teams =
+  | "Design"
+  | "Product"
+  | "Marketing"
+  | "Management"
+  | "Engineering"
+  | "Sales"
+  | "Support"
+  | "Other"
+  | (string & {});
 
 export type UserName = {
   avatar: string;

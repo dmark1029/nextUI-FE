@@ -11,11 +11,11 @@ export default function PricingPage() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
   const fetchUsers = async () => {
-    /* eslint-disable no-console */
     try {
       const response = await axios.get<Subnets[]>(
-        "http://107.189.19.248:3000/api/subnets",
+        "http://localhost:3000/api/subnets",
       );
 
       setUsers(
@@ -27,7 +27,6 @@ export default function PricingPage() {
     } catch (error) {
       console.error("Error fetching users:", error);
     }
-    /* eslint-enable no-console */
   };
 
   return users.length !== 0 ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Selection, SortDescriptor } from "@heroui/react";
-import type { ColumnsKey, Subnets } from "./data";
+import type { ColumnsKey, Wallets } from "./data";
 import type { Key } from "@react-types/shared";
 
 import {
@@ -20,11 +20,9 @@ import {
   RadioGroup,
   Radio,
   Chip,
-  User,
   Pagination,
   Divider,
   Tooltip,
-  useButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -35,127 +33,44 @@ import {
   ModalFooter,
   useDisclosure,
   Checkbox,
-  Link,
-  Select,
-  SelectItem,
   Alert,
-  Spinner,
+  Textarea,
 } from "@heroui/react";
-import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useRef, useCallback, useState } from "react";
+import { CopyIcon, SearchIcon } from "@heroui/shared-icons";
+import React, { useMemo, useCallback, useState } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
 
 import { ArrowDownIcon } from "../shared/arrow-down";
 import { ArrowUpIcon } from "../shared/arrow-up";
 import { useMemoizedCallback } from "../shared/use-memoized-callback";
+import { CopyDoneIcon } from "../shared/copy-text";
 
 import { columns, INITIAL_VISIBLE_COLUMNS } from "./data";
 
-interface SubnetProps {
-  users: Subnets[];
+interface WalletsProps {
+  wallets: Wallets[];
 }
 
-interface UserIconProps extends React.SVGProps<SVGSVGElement> {
-  fill?: string;
-  size?: number;
-  height?: number;
-  width?: number;
-}
-export const UserIcon: React.FC<UserIconProps> = ({
-  fill = "currentColor",
-  size,
-  height,
-  width,
-  ...props
-}) => {
-  return (
-    <svg
-      data-name="Iconly/Curved/Profile"
-      height={size || height || 24}
-      viewBox="0 0 24 24"
-      width={size || width || 24}
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <g
-        fill="none"
-        stroke={fill}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit={10}
-        strokeWidth={1.5}
-      >
-        <path
-          d="M11.845 21.662C8.153 21.662 5 21.088 5 18.787s3.133-4.425 6.845-4.425c3.692 0 6.845 2.1 6.845 4.4s-3.134 2.9-6.845 2.9z"
-          data-name="Stroke 1"
-        />
-        <path
-          d="M11.837 11.174a4.372 4.372 0 10-.031 0z"
-          data-name="Stroke 3"
-        />
-      </g>
-    </svg>
-  );
-};
-
-export const userRoles = [
-  { key: "admin", label: "Admin" },
-  { key: "manager", label: "Manager" },
-  { key: "user", label: "User" },
-];
-export const MailIcon = (props: any) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="1em"
-      {...props}
-    >
-      <path
-        d="M17 3.5H7C4 3.5 2 5 2 8.5V15.5C2 19 4 20.5 7 20.5H17C20 20.5 22 19 22 15.5V8.5C22 5 20 3.5 17 3.5ZM17.47 9.59L14.34 12.09C13.68 12.62 12.84 12.88 12 12.88C11.16 12.88 10.31 12.62 9.66 12.09L6.53 9.59C6.21 9.33 6.16 8.85 6.41 8.53C6.67 8.21 7.14 8.15 7.46 8.41L10.59 10.91C11.35 11.52 12.64 11.52 13.4 10.91L16.53 8.41C16.85 8.15 17.33 8.2 17.58 8.53C17.84 8.85 17.79 9.33 17.47 9.59Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-};
-
-export const LockIcon = (props: any) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="1em"
-      {...props}
-    >
-      <path
-        d="M12.0011 17.3498C12.9013 17.3498 13.6311 16.6201 13.6311 15.7198C13.6311 14.8196 12.9013 14.0898 12.0011 14.0898C11.1009 14.0898 10.3711 14.8196 10.3711 15.7198C10.3711 16.6201 11.1009 17.3498 12.0011 17.3498Z"
-        fill="currentColor"
-      />
-      <path
-        d="M18.28 9.53V8.28C18.28 5.58 17.63 2 12 2C6.37 2 5.72 5.58 5.72 8.28V9.53C2.92 9.88 2 11.3 2 14.79V16.65C2 20.75 3.25 22 7.35 22H16.65C20.75 22 22 20.75 22 16.65V14.79C22 11.3 21.08 9.88 18.28 9.53ZM12 18.74C10.33 18.74 8.98 17.38 8.98 15.72C8.98 14.05 10.34 12.7 12 12.7C13.66 12.7 15.02 14.06 15.02 15.72C15.02 17.39 13.67 18.74 12 18.74ZM7.35 9.44C7.27 9.44 7.2 9.44 7.12 9.44V8.28C7.12 5.35 7.95 3.4 12 3.4C16.05 3.4 16.88 5.35 16.88 8.28V9.45C16.8 9.45 16.73 9.45 16.65 9.45H7.35V9.44Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-};
-
-export default function SubnetTable({ users }: SubnetProps) {
+export default function WalletTable({ wallets }: WalletsProps) {
   const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [isChecked, setIsChecked] = useState(false);
+  const [copiedValue, setCopiedValue] = useState<string>("");
+
   const showSubnetDetails = (item: any) => {
+    setCopiedValue("");
     setSelectedRow((prevRow: { id: any }) =>
       prevRow && prevRow.id === item.id ? null : item,
     );
-    showSubnetDetailModal();
-    console.log("item", item);
+    console.log("selected rows", item);
+    showInstanceDetailModal();
+  };
+
+  const copyCode = async (code: string) => {
+    await navigator.clipboard.writeText(code);
+    setTimeout(() => {
+      setCopiedValue(code);
+    }, 1000);
   };
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -170,7 +85,7 @@ export default function SubnetTable({ users }: SubnetProps) {
     isOpen: isShowSubnetDetails,
     onOpenChange: onShowSubnetDetails,
     onClose: closeSubnetDetailModal,
-    onOpen: showSubnetDetailModal,
+    onOpen: showInstanceDetailModal,
   } = useDisclosure();
 
   const {
@@ -215,27 +130,12 @@ export default function SubnetTable({ users }: SubnetProps) {
     column: "username",
     direction: "ascending",
   });
-  const [selectedRole, setSelectedRole] = useState("");
   const [workerTypeFilter, setWorkerTypeFilter] = React.useState("all");
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [startDateFilter, setStartDateFilter] = React.useState("all");
   // const [avatar, setAvatar] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState("");
-  const [isRemove, setIsRemove] = useState(false);
-  const [showPermission, setPermissionModal] = useState(false);
   // test
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
 
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-
-      setAvatarPreview(previewUrl);
-    }
-  };
-  const handleSelectRole = (e: any) => {
-    setSelectedRole(e.target.value);
-  };
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -254,40 +154,27 @@ export default function SubnetTable({ users }: SubnetProps) {
   }, [visibleColumns, sortDescriptor]);
 
   const itemFilter = useCallback(
-    (col: Subnets) => {
+    (col: Wallets) => {
       let allWorkerType = workerTypeFilter === "all";
-      let allStatus = statusFilter === "all";
       let allStartDate = startDateFilter === "all";
 
-      return (
-        allWorkerType &&
-        // (allStatus || statusFilter === col.status.toLowerCase()) &&
-        (allStartDate ||
-          new Date(
-            new Date().getTime() -
-              +(startDateFilter.match(/(\d+)(?=Days)/)?.[0] ?? 0) *
-                24 *
-                60 *
-                60 *
-                1000,
-          ) <= new Date(col.createdAt))
-      );
+      return allWorkerType && allStartDate;
     },
-    [startDateFilter, statusFilter, workerTypeFilter],
+    [startDateFilter, workerTypeFilter],
   );
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredWallets = [...wallets];
 
     if (filterValue) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.username.name.toLowerCase().includes(filterValue.toLowerCase()),
+      filteredWallets = filteredWallets.filter((wallet) =>
+        wallet.walletName.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
 
-    filteredUsers = filteredUsers.filter(itemFilter);
+    filteredWallets = filteredWallets.filter(itemFilter);
 
-    return filteredUsers;
+    return filteredWallets;
   }, [filterValue, itemFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1;
@@ -300,19 +187,12 @@ export default function SubnetTable({ users }: SubnetProps) {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = useMemo(() => {
-    return [...items].sort((a: Subnets, b: Subnets) => {
-      const col = sortDescriptor.column as keyof Subnets;
+    return [...items].sort((a: Wallets, b: Wallets) => {
+      const col = sortDescriptor.column as keyof Wallets;
 
       let first = a[col];
       let second = b[col];
       let cmp;
-
-      if (col === "username") {
-        const firstStr = first.toString();
-        const secondStr = second.toString();
-
-        cmp = firstStr < secondStr ? -1 : firstStr > secondStr ? 1 : 0;
-      }
 
       cmp = first < second ? -1 : first > second ? 1 : 0;
 
@@ -339,110 +219,35 @@ export default function SubnetTable({ users }: SubnetProps) {
     return resultKeys;
   }, [selectedKeys, filteredItems, filterValue]);
 
-  const eyesRef = useRef<HTMLButtonElement | null>(null);
-  const editRef = useRef<HTMLButtonElement | null>(null);
-  const deleteRef = useRef<HTMLButtonElement | null>(null);
-  const { getButtonProps: getEyesProps } = useButton({ ref: eyesRef });
-  const { getButtonProps: getEditProps } = useButton({ ref: editRef });
-  const { getButtonProps: getDeleteProps } = useButton({ ref: deleteRef });
   const getMemberInfoProps = useMemoizedCallback(() => ({
     onClick: handleMemberClick,
   }));
 
   const openModal = () => {
-    setAvatarPreview("");
     showCreateNewSubnetModal();
   };
 
-  const setPermission = () => {
-    onPermissionModalChange();
-    setPermissionModal(true);
-  };
   const renderCell = useMemoizedCallback(
-    (user: Subnets, columnKey: React.Key) => {
+    (wallet: Wallets, columnKey: React.Key) => {
       const userKey = columnKey as ColumnsKey;
 
-      const cellValue = user[
-        userKey as unknown as keyof Subnets
+      const cellValue = wallet[
+        userKey as unknown as keyof Wallets
       ] as unknown as string;
 
       switch (userKey) {
-        case "username":
-          return (
-            <User
-              avatarProps={{ radius: "lg", src: user[userKey].avatar }}
-              classNames={{
-                name: "text-default-foreground",
-                description: "text-default-500",
-              }}
-              description={user[userKey].email}
-              name={user[userKey].name}
-            >
-              {user[userKey].email}
-            </User>
-          );
-        case "createdAt":
-          return (
-            <div className="flex items-center gap-1">
-              <p className="text-nowrap text-small capitalize text-default-foreground">
-                {new Intl.DateTimeFormat("en-US", {
-                  month: "2-digit",
-                  day: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                }).format(cellValue as unknown as Date)}
-              </p>
-            </div>
-          );
-        case "emission":
-          return (
-            <div className="flex items-center gap-2">
-              <p className="text-nowrap text-small text-default-foreground">
-                {user[userKey]}
-              </p>
-            </div>
-          );
-        case "engineers":
-          return (
-            <div className="float-start flex gap-1">
-              {user[userKey].map((team: any, index: number) => {
-                if (index < 3) {
-                  return (
-                    <Chip
-                      key={team}
-                      className="rounded-xl bg-default-100 px-[6px] capitalize text-default-800"
-                      color="primary"
-                      size="sm"
-                      variant="flat"
-                    >
-                      {team}
-                    </Chip>
-                  );
-                }
-                if (index < 4) {
-                  return (
-                    <Chip
-                      key={team}
-                      className="text-default-500"
-                      color="primary"
-                      size="sm"
-                      variant="flat"
-                    >
-                      {`+${team.length - 3}`}
-                    </Chip>
-                  );
-                }
-
-                return null;
-              })}
-            </div>
-          );
-        case "reg_cost":
+        case "uid":
           return <div className="text-default-foreground">{cellValue}</div>;
-        // case "status":
-        //   return <Status status={cellValue as StatusOptions} />;
+        case "walletName":
+          return <div className="text-default-foreground">{cellValue}</div>;
+        case "instance":
+          return <div className="text-default-foreground">{cellValue}</div>;
+        case "walletHotkey":
+          return <div className="text-default-foreground">{cellValue}</div>;
+        case "alphaStakes":
+          return <div className="text-default-foreground">{cellValue}</div>;
+        case "balance":
+          return <div className="text-default-foreground">{cellValue}</div>;
         default:
           return cellValue;
       }
@@ -676,22 +481,34 @@ export default function SubnetTable({ users }: SubnetProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Subnets</h1>
+          <h1 className="text-2xl font-[700] leading-[32px]">Wallets</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
             variant="flat"
           >
-            {users.length}
+            {wallets.length}
           </Chip>
         </div>
-        <Button
-          color="primary"
-          endContent={<Icon icon="solar:add-circle-bold" width={20} />}
-          onPress={() => openModal()}
-        >
-          New Subnet
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            className="w-[140px]"
+            color="primary"
+            variant="shadow"
+            onPress={() => openModal()}
+          >
+            Import ...
+          </Button>
+          <Button
+            className="w-[140px]"
+            color="primary"
+            endContent={<Icon icon="solar:add-circle-bold" width={20} />}
+            variant="shadow"
+            onPress={() => openModal()}
+          >
+            Create New
+          </Button>
+        </div>
       </div>
     );
   }, []);
@@ -756,7 +573,7 @@ export default function SubnetTable({ users }: SubnetProps) {
     <div className="h-full w-full p-6">
       {topBar}
 
-      {/* Create New Subnet Modal */}
+      {/* Create New Wallet Modal */}
       <Modal
         backdrop={backdrop}
         classNames={{
@@ -772,64 +589,73 @@ export default function SubnetTable({ users }: SubnetProps) {
           {(closeCreateNewSubnetModal) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Create New Subnet
+                Create New Wallet
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <Input
-                    key="subnet_no"
+                    key="wallet_name"
                     isRequired
-                    label="Subnet No"
-                    labelPlacement="outside-left"
+                    label="Wallet Name"
                     type="text"
                   />
 
                   <Input
-                    key="subnet_name"
+                    key="wallet_hotkey"
                     isRequired
-                    label="Subnet Name"
-                    labelPlacement="outside-left"
+                    label="Wallet Hotkey"
                     type="text"
                   />
                 </div>
-
-                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    key="subnet_emission"
-                    isRequired
-                    endContent={<p>%</p>}
-                    label="Subnet Emission"
-                    labelPlacement="outside-left"
-                    type="number"
-                  />
-                  <Input
-                    key="reg_cost"
-                    isRequired
-                    endContent={<p>tao</p>}
-                    label="Reg Cost"
-                    labelPlacement="outside-left"
-                    type="number"
-                  />
-                </div>
-
-                <div className="flex w-full flex-wrap md:flex-nowrap pl-2 mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select
-                    isRequired
-                    className="max-w-full"
-                    label="Engineers"
-                    labelPlacement="outside-left"
+                <Textarea
+                  disableAnimation
+                  disableAutosize
+                  isRequired
+                  classNames={{
+                    input: "resize-y min-h-[40px]",
+                  }}
+                  label="Description"
+                  variant="bordered"
+                />
+                <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <Input key="uid" isRequired label="UID" type="text" />
+                  <Checkbox
+                    classNames={{
+                      label: "text-small",
+                      base: cn(
+                        "w-1/2 max-w-md",
+                        "hover:bg-content2 items-center justify-start",
+                        "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
+                        "data-[selected=true]:border-primary",
+                      ),
+                    }}
+                    isSelected={isChecked}
+                    onChange={(e) => setIsChecked(e.target.checked)}
                   >
-                    <SelectItem key="1">1</SelectItem>
-                    <SelectItem key="2">2</SelectItem>
-                  </Select>
+                    Generate
+                  </Checkbox>
                 </div>
+                {!isChecked && (
+                  <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                    <Input
+                      key="coldkey_seed"
+                      isRequired
+                      label="Coldkey Seed"
+                      type="text"
+                    />
+
+                    <Input
+                      key="hotkey_seed"
+                      isRequired
+                      label="Hotkey Seed"
+                      type="text"
+                    />
+                  </div>
+                )}
               </ModalBody>
               <ModalFooter className="flex justify-center items-center">
-                <Button color="danger" onPress={closeCreateNewSubnetModal}>
-                  Cancel
-                </Button>
                 <Button color="primary" onPress={closeCreateNewSubnetModal}>
-                  Submit
+                  OK
                 </Button>
               </ModalFooter>
             </>
@@ -869,121 +695,6 @@ export default function SubnetTable({ users }: SubnetProps) {
           )}
         </ModalContent>
       </Modal>
-      <Modal
-        backdrop={backdrop}
-        classNames={{
-          body: "rounded-[15px] border-1 m-[9px] mx-5",
-          backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
-        }}
-        isDismissable={false}
-        isOpen={isPermissionModalOpen}
-        placement="top-center"
-        size="2xl"
-        onOpenChange={onPermissionModalChange}
-      >
-        <ModalContent>
-          {(onPermissionModalChange) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Set Permission
-              </ModalHeader>
-              <ModalBody className="max-h-[500px] overflow-auto max-w-[800px]">
-                <Table aria-label="Permissions Table">
-                  <TableHeader>
-                    <TableColumn className="text-center min-w-36 max-w-36">
-                      <p className="text-base">User</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 invisible">Instance</p>
-                      <p className="mb-2">Read</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 text-green-500">Instance</p>
-                      <p className="mb-2">Write</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 invisible">Instance</p>
-                      <p className="mb-2">Delete</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 invisible">Miner</p>
-                      <p className="mb-2">Read</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 text-green-500">Miner</p>
-                      <p className="mb-2">Write</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 invisible">Miner</p>
-                      <p className="mb-2">Delete</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 invisible">Wallet</p>
-                      <p className="mb-2">Read</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 text-green-500">Wallet</p>
-                      <p className="mb-2">Write</p>
-                    </TableColumn>
-                    <TableColumn className="text-center">
-                      <p className="text-xl my-2 invisible">Wallet</p>
-                      <p className="mb-2">Delete</p>
-                    </TableColumn>
-                  </TableHeader>
-                  <TableBody loadingContent={<Spinner label="Loading..." />}>
-                    {mockUsers.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-semibold">
-                          {user.name}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Checkbox />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onPress={onPermissionModalChange}
-                >
-                  Close
-                </Button>
-                <Button color="primary" onPress={onPermissionModalChange}>
-                  Confirm
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
 
       {/* Subnet Detail Modal */}
 
@@ -999,180 +710,94 @@ export default function SubnetTable({ users }: SubnetProps) {
           {(closeSubnetDetailModal) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Subnet Detail
+                Wallet Detail
               </ModalHeader>
               <ModalBody className="border-1 rounded-lg mx-4 p-4">
-                <div className="flex w-full flex-wrap items-end md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2">Github URL: </p>
-                  <Link
-                    isExternal
-                    showAnchorIcon
-                    href="https://github.com/heroui-inc/heroui"
-                  >
-                    https://github.com/dmark1029
-                  </Link>
-                </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2">Alpha Token Price: </p>
                   <Input
                     isReadOnly
-                    className="max-w-[120px]"
-                    endContent={<p>tao</p>}
-                    errorMessage="Please enter a valid username"
-                    labelPlacement="outside-left"
-                    name="username"
+                    label="Wallet Name: "
+                    name="walletName"
                     type="text"
-                    value="340"
-                    variant="bordered"
+                    value={selectedRow.walletName}
+                    variant="flat"
                   />
-                  <div> = </div>
                   <Input
                     isReadOnly
-                    className="max-w-[120px]"
-                    labelPlacement="outside-left"
-                    startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">$</span>
-                      </div>
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={() => copyCode(selectedRow.walletHotkey)}
+                      >
+                        {selectedRow.walletHotkey === copiedValue ? (
+                          <CopyDoneIcon className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <CopyIcon className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
                     }
-                    type="number"
-                    value="3.429"
-                    variant="bordered"
+                    label="Wallet Hotkey: "
+                    name="walletHotkey"
+                    type="text"
+                    value={selectedRow.walletHotkey}
+                    variant="flat"
                   />
                 </div>
-                {/* <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20">Instances: </p>
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="healthy"
-                    className="max-w-[120px]"
-                    color="success"
-                    label="Healthy"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="unhealthy"
-                    className="max-w-[120px]"
-                    color="danger"
-                    label="Unhealty"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="Total"
-                    className="max-w-[120px]"
-                    color="default"
-                    label="Total"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                </div>
+
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20">Wallets: </p>
                   <Input
                     isReadOnly
-                    size="sm"
-                    key="healthy"
-                    className="max-w-[120px]"
-                    color="success"
-                    label="Healthy"
-                    labelPlacement="outside-left"
+                    label="UID"
+                    name="udi"
                     type="text"
-                    value="8"
+                    value={selectedRow.walletName}
+                    variant="flat"
                   />
                   <Input
                     isReadOnly
-                    size="sm"
-                    key="unhealthy"
-                    className="max-w-[120px]"
-                    color="danger"
-                    label="Unhealty"
-                    labelPlacement="outside-left"
+                    label="Alpha Stakes"
+                    name="walletHotkey"
                     type="text"
-                    value="7"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="Total"
-                    className="max-w-[120px]"
-                    color="default"
-                    label="Total"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="15"
+                    value={selectedRow.walletHotkey}
+                    variant="flat"
                   />
                 </div>
+
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20">Miners: </p>
                   <Input
                     isReadOnly
-                    size="sm"
-                    key="healthy"
-                    className="max-w-[120px]"
-                    color="success"
-                    label="Healthy"
-                    labelPlacement="outside-left"
+                    label="Instance"
+                    name="instance"
                     type="text"
-                    value="9"
+                    value="tm_sn3"
+                    variant="flat"
                   />
                   <Input
                     isReadOnly
-                    size="sm"
-                    key="unhealthy"
-                    className="max-w-[120px]"
-                    color="danger"
-                    label="Unhealty"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="Total"
-                    className="max-w-[120px]"
-                    color="default"
-                    label="Total"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                </div> */}
-                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Input
-                    isReadOnly
-                    className="max-w-[190px]"
-                    label="Total Covering Incentive"
-                    labelPlacement="inside"
+                    endContent={<p>tao</p>}
+                    label="Balance"
+                    name="walletHotkey"
                     type="number"
                     value="46"
-                    variant="bordered"
+                    variant="flat"
                   />
-                  <Input
-                    isReadOnly
-                    className="max-w-[190px]"
-                    endContent={<p>tao</p>}
-                    label="Total Income Alpha"
-                    labelPlacement="inside"
-                    type="number"
-                    value="34"
-                    variant="bordered"
-                  />
-                  <p>=</p>
-                  <p>($ 34.5)</p>
                 </div>
+
+                <Textarea
+                  disableAnimation
+                  disableAutosize
+                  isReadOnly
+                  classNames={{
+                    input: "resize-y min-h-[40px]",
+                  }}
+                  label="Description"
+                  value="hello world"
+                  variant="bordered"
+                />
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="flex items-center justify-center">
                 <Button color="danger" onPress={closeSubnetDetailModal}>
                   Close
                 </Button>
@@ -1187,6 +812,7 @@ export default function SubnetTable({ users }: SubnetProps) {
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         color="primary"
+        rowHeight={100}
         selectedKeys={filterSelectedKeys}
         selectionMode="single"
         sortDescriptor={sortDescriptor}
