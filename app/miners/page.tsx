@@ -15,7 +15,7 @@ export default function MinerPage() {
   const fetchMiners = async () => {
     try {
       const response = await axios.get<Miners[]>(
-        "http://107.189.19.248:3000/api/miners",
+        "http://localhost:3000/api/miners",
         // "http://localhost:8000/api/miners/",
       );
 

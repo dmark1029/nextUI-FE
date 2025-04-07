@@ -15,7 +15,7 @@ export default function PricingPage() {
   const fetchUsers = async () => {
     try {
       const response = await axios.get<Users[]>(
-        "http://107.189.19.248:3000/api/users",
+        "http://localhost:3000/api/users",
       );
 
       console.log("dasta:", response.data);

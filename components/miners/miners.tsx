@@ -41,7 +41,7 @@ import {
   Progress,
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
 
@@ -62,6 +62,31 @@ export default function MinerTable({ miners }: MinerProps) {
   const [uid, setUID] = useState("");
   const prTitle = "Success";
   const prDescription = "A PR was made successfully !";
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const envFileRef = useRef<HTMLInputElement>(null);
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+  const loadEnvFileClick = () => {
+    envFileRef.current?.click();
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("123");
+    const file = e.target.files?.[0];
+
+    if (file) {
+      console.log("Selected file:", file);
+    }
+  };
+
+  const handleEnvFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      console.log("Selected file:", file);
+    }
+  };
 
   const [isInstalling, setIsInstalling] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -94,9 +119,7 @@ export default function MinerTable({ miners }: MinerProps) {
   };
 
   const showSubnetDetails = (item: any) => {
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
     console.log("selected rows", item);
     showInstanceDetailModal();
   };
@@ -677,11 +700,21 @@ export default function MinerTable({ miners }: MinerProps) {
                         placeholder="Wallet Address"
                         type="text"
                       />
-                      <Input
-                        className="min-w-[100px]"
-                        color="primary"
+                      <input
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
                         type="file"
+                        onChange={handleFileChange}
                       />
+
+                      <Button
+                        className="w-[140px]"
+                        color="primary"
+                        variant="shadow"
+                        onPress={handleButtonClick}
+                      >
+                        Import ...
+                      </Button>
                     </div>
                     <div className="flex w-full flex-wrap justify-between items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                       <p className="text-sm min-w-[60px]">UID: </p>
@@ -712,12 +745,23 @@ export default function MinerTable({ miners }: MinerProps) {
                     )}
                     <div className="flex w-full flex-wrap justify-start items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                       <p className="text-sm min-w-[150px]">Load env file: </p>
-                      <Input
-                        isRequired
+                      <input
+                        ref={envFileRef}
                         className="max-w-[150px]"
                         color="primary"
+                        style={{ display: "none" }}
                         type="file"
+                        onChange={handleEnvFileChange}
                       />
+
+                      <Button
+                        className="w-[140px]"
+                        color="primary"
+                        variant="shadow"
+                        onPress={loadEnvFileClick}
+                      >
+                        Import ....
+                      </Button>
                     </div>
                     <Textarea
                       disableAnimation

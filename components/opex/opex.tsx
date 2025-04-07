@@ -60,9 +60,7 @@ export default function OpexTable({ opexData }: OpexProp) {
   const showSubnetDetails = (item: any) => {
     console.log("detail", item);
     setCopiedValue("");
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
     showInstanceDetailModal();
   };
 
@@ -748,7 +746,7 @@ export default function OpexTable({ opexData }: OpexProp) {
                     labelPlacement="outside-left"
                     name="opexBalance"
                     type="number"
-                    value="123123"
+                    value={selectedRow.opexBalance}
                     variant="flat"
                   />
                   at
@@ -762,7 +760,7 @@ export default function OpexTable({ opexData }: OpexProp) {
                     }
                     name="walletHotkey"
                     type="number"
-                    value={selectedRow.opexBalance || 0}
+                    value={selectedRow.opexBalance}
                     variant="flat"
                   />
                   <Button color="danger" onPress={closeOpexDetailModal}>

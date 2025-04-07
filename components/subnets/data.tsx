@@ -38,7 +38,7 @@ export type UserName = {
 
 export type Subnets = {
   id: number;
-  username: UserName;
+  username: string;
   emission: number;
   reg_cost: number;
   // status: StatusOptions;
@@ -67,7 +67,7 @@ export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
 
 export const columns = [
   { name: "No", uid: "id" },
-  { name: "Name", uid: "username", sortDirection: "ascending" },
+  { name: "Name", uid: "username" },
   { name: "Emission (%)", uid: "emission" },
   { name: "Reg Cost (tao)", uid: "reg_cost" },
   { name: "Engineers", uid: "engineers" },
@@ -136,11 +136,7 @@ const generateMockUserData = (count: number): Subnets[] => {
 
     const user: Subnets = {
       id: i,
-      username: {
-        avatar: `https://i.pravatar.cc/150?img=${i}`,
-        email: `${selectedName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
-        name: selectedName,
-      },
+      username: selectedName,
       emission: i / 100,
       reg_cost: i / 100,
       // status:

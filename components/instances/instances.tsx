@@ -60,11 +60,9 @@ export default function InstanceTable({ instances }: InstanceProps) {
   const [selectedRow, setSelectedRow] = useState<any>(null);
   const [copiedValue, setCopiedValue] = useState<string>("");
 
-  const showSubnetDetails = (item: any) => {
+  const showInstanceDetails = (item: any) => {
     setCopiedValue("");
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
     showInstanceDetailModal();
   };
 
@@ -1087,7 +1085,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow key={item.id} onClick={() => showInstanceDetails(item)}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}

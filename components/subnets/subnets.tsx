@@ -20,7 +20,6 @@ import {
   RadioGroup,
   Radio,
   Chip,
-  User,
   Pagination,
   Divider,
   Tooltip,
@@ -281,7 +280,7 @@ export default function SubnetTable({ users }: SubnetProps) {
 
     if (filterValue) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.username.name.toLowerCase().includes(filterValue.toLowerCase()),
+        user.username.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
 
@@ -368,19 +367,7 @@ export default function SubnetTable({ users }: SubnetProps) {
 
       switch (userKey) {
         case "username":
-          return (
-            <User
-              avatarProps={{ radius: "lg", src: user[userKey].avatar }}
-              classNames={{
-                name: "text-default-foreground",
-                description: "text-default-500",
-              }}
-              description={user[userKey].email}
-              name={user[userKey].name}
-            >
-              {user[userKey].email}
-            </User>
-          );
+          return <div className="text-default-foreground">{cellValue}</div>;
         case "createdAt":
           return (
             <div className="flex items-center gap-1">
