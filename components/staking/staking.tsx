@@ -60,9 +60,7 @@ export default function StakingTable({ stakingData }: StakingProps) {
 
   const showSubnetDetails = (item: any) => {
     setCopiedValue("");
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
     showStakingDetailModal();
   };
 

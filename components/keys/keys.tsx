@@ -32,7 +32,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  Checkbox,
   Alert,
   Textarea,
 } from "@heroui/react";
@@ -68,9 +67,7 @@ export default function KeyTable({ keys }: KeysProps) {
     }, 1000);
   };
   const showSubnetDetails = (item: any) => {
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
     console.log("selected rows", item);
     setCopiedValue("");
     showInstanceDetailModal();
@@ -620,7 +617,8 @@ export default function KeyTable({ keys }: KeysProps) {
                 Create New Service
               </ModalHeader>
               <ModalBody>
-                <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                <p>Is being prepared....</p>
+                {/* <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
                   <Input
                     key="subnet_name"
                     isRequired
@@ -679,7 +677,7 @@ export default function KeyTable({ keys }: KeysProps) {
                       type="text"
                     />
                   </div>
-                )}
+                )} */}
               </ModalBody>
               <ModalFooter className="flex justify-center items-center">
                 <Button color="primary" onPress={closeCreateNewSubnetModal}>

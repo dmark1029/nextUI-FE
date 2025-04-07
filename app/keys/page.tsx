@@ -15,7 +15,7 @@ export default function PricingPage() {
   const fetchKeys = async () => {
     try {
       const response = await axios.get<Keys[]>(
-        "http://107.189.19.248:3000/api/keys",
+        "http://localhost:3000/api/keys",
       );
 
       setKeys(

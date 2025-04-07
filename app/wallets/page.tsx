@@ -15,7 +15,7 @@ export default function WalletPage() {
   const fetchWallets = async () => {
     try {
       const response = await axios.get<Wallets[]>(
-        "http://107.189.19.248:3000/api/wallets",
+        "http://localhost:3000/api/wallets",
       );
 
       setWallets(

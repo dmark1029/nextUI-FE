@@ -15,7 +15,7 @@ export default function OpexPage() {
   const fetchStakingData = async () => {
     try {
       const response = await axios.get<Staking[]>(
-        "http://107.189.19.248:3000/api/staking",
+        "http://localhost:3000/api/staking",
       );
 
       setStakingData(

@@ -335,7 +335,6 @@ export default function UserTable({ users }: UserProps) {
   };
 
   const confirmDelete = () => {
-    onRemoveModalOpen();
     setIsRemove(true);
   };
 
@@ -965,15 +964,17 @@ export default function UserTable({ users }: UserProps) {
           )}
         </ModalContent>
       </Modal>
+
+      {/* Remove User Modal */}
+
       <Modal
         backdrop={backdrop}
         isDismissable={false}
-        isOpen={isRemoveModalOpen}
+        isOpen={isRemove}
         placement="top-center"
-        onOpenChange={onRemoveModalChange}
       >
         <ModalContent>
-          {(onRemoveModalClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">Warning</ModalHeader>
               <ModalBody>
@@ -986,11 +987,11 @@ export default function UserTable({ users }: UserProps) {
                 <Button
                   color="danger"
                   variant="flat"
-                  onPress={onRemoveModalClose}
+                  onPress={() => setIsRemove(false)}
                 >
                   Close
                 </Button>
-                <Button color="primary" onPress={onRemoveModalClose}>
+                <Button color="primary" onPress={() => setIsRemove(false)}>
                   Confirm
                 </Button>
               </ModalFooter>

@@ -37,7 +37,7 @@ import {
   Textarea,
 } from "@heroui/react";
 import { CopyIcon, SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
 
@@ -56,12 +56,21 @@ export default function WalletTable({ wallets }: WalletsProps) {
   const [selectedRow, setSelectedRow] = useState<any>(null);
   const [isChecked, setIsChecked] = useState(false);
   const [copiedValue, setCopiedValue] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      console.log("Selected file:", file);
+    }
+  };
 
   const showSubnetDetails = (item: any) => {
     setCopiedValue("");
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
     console.log("selected rows", item);
     showInstanceDetailModal();
   };
@@ -491,13 +500,20 @@ export default function WalletTable({ wallets }: WalletsProps) {
           </Chip>
         </div>
         <div className="flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            type="file"
+            onChange={handleFileChange}
+          />
+
           <Button
             className="w-[140px]"
             color="primary"
             variant="shadow"
-            onPress={() => openModal()}
+            onPress={handleButtonClick}
           >
-            Import ...
+            Import File
           </Button>
           <Button
             className="w-[140px]"

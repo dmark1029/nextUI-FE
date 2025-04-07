@@ -11,15 +11,9 @@ type Engineers =
   | "Other"
   | (string & {});
 
-export type username = {
-  avatar: string;
-  email: string;
-  name: string;
-};
-
 export type Subnets = {
   id: number;
-  username: username;
+  username: string;
   emission: number;
   reg_cost: number;
   createdAt: string;
@@ -29,23 +23,15 @@ export type Subnets = {
 const mockSubnets: Subnets[] = [
   {
     id: 1,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=1",
-      email: "alice@example.com",
-      name: "Alice Johnson",
-    },
+    username: "Apex",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
-    engineers: ["Engineering", "Design", "Sales"],
+    engineers: ["Alex", "Danijel", "Sales"],
   },
   {
     id: 2,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=2",
-      email: "bob@example.com",
-      name: "Bob Smith",
-    },
+    username: "omron",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -53,11 +39,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 3,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=3",
-      email: "charlie@example.com",
-      name: "Charlie Brown",
-    },
+    username: "Targon",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -65,11 +47,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 4,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=4",
-      email: "david@example.com",
-      name: "David Wilson",
-    },
+    username: "Dippy",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -77,11 +55,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 5,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=5",
-      email: "eve@example.com",
-      name: "Eve Martinez",
-    },
+    username: "Web genie AI",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -89,11 +63,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 6,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=6",
-      email: "frank@example.com",
-      name: "Frank Thompson",
-    },
+    username: "Chute",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -101,11 +71,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 7,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=7",
-      email: "grace@example.com",
-      name: "Grace Garcia",
-    },
+    username: "ReadyAI",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -113,11 +79,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 8,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=8",
-      email: "hannah@example.com",
-      name: "Hannah Lee",
-    },
+    username: "Gaia",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -125,11 +87,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 9,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=9",
-      email: "isaac@example.com",
-      name: "Isaac Anderson",
-    },
+    username: "Efficient Frontier",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -137,11 +95,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 10,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=10",
-      email: "julia@example.com",
-      name: "Julia Roberts",
-    },
+    username: "NOVA",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
@@ -149,11 +103,7 @@ const mockSubnets: Subnets[] = [
   },
   {
     id: 11,
-    username: {
-      avatar: "https://i.pravatar.cc/150?img=10",
-      email: "julia@example.com",
-      name: "Danijel Roberts",
-    },
+    username: "FakeNews",
     emission: 0.5,
     reg_cost: 0.5,
     createdAt: new Date().toISOString(),
