@@ -15,7 +15,7 @@ export default function InstancePage() {
   const fetchInstances = async () => {
     try {
       const response = await axios.get<Instances[]>(
-        "http://localhost:3000/api/instances",
+        "http://107.189.19.248:3000/api/instances",
         // "http://localhost:8000/api/instances/",
       );
 
