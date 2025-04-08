@@ -15,7 +15,7 @@ export default function OpexPage() {
   const fetchOpexData = async () => {
     try {
       const response = await axios.get<Opex[]>(
-        "http://localhost:3000/api/opex",
+        "http://107.189.19.248:3000/api/opex",
       );
 
       setOpexData(
