@@ -7,7 +7,7 @@ export interface CopyTextProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   textClassName?: string;
   copyText?: string;
-  children: string;
+  children: React.ReactNode;
 }
 
 export const CopyIcon = (props: any) => {
@@ -59,7 +59,12 @@ export const CopyText = memo(
 
     const handleClick = () => {
       onClearTimeout();
-      navigator.clipboard.writeText(children);
+      const textToCopy =
+        React.isValidElement(children) && children.props
+          ? (children.props as any).value
+          : children;
+
+      navigator.clipboard.writeText(textToCopy);
       setCopied(true);
 
       setCopyTimeout(

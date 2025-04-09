@@ -39,16 +39,16 @@ export type UserName = {
 export type Users = {
   id: number;
   userID: number;
-  externalWorkerID: string;
   username: UserName;
   subnets: string;
   role: "Contractor" | "Employee";
   // status: StatusOptions;
-  createdAt: Date;
+  createdAt: string;
   // teams: Teams[];
 };
 
 export type ColumnsKey =
+  | "id"
   | "userID"
   | "externalWorkerID"
   | "username"
@@ -61,6 +61,7 @@ export type ColumnsKey =
   | "permission";
 
 export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
+  "id",
   "userID",
   "externalWorkerID",
   "username",
@@ -74,6 +75,7 @@ export const INITIAL_VISIBLE_COLUMNS: ColumnsKey[] = [
 ];
 
 export const columns = [
+  { name: "No", uid: "id" },
   { name: "User ID", uid: "userID" },
   { name: "Name", uid: "username", sortDirection: "ascending" },
   { name: "Subnets", uid: "subnets" },
@@ -81,7 +83,6 @@ export const columns = [
   // {name: "Status", uid: "status", info: "The user's current status"},
   { name: "Created At", uid: "createdAt" },
   // {name: "Teams", uid: "teams"},
-  { name: "Actions", uid: "actions" },
   { name: "Permission", uid: "permission" },
 ];
 
@@ -150,7 +151,6 @@ const generateMockUserData = (count: number): Users[] => {
     const user: Users = {
       id: i,
       userID: Math.floor(Math.random() * 1000),
-      externalWorkerID: `EXT-${Math.floor(Math.random() * 1000)}`,
       username: {
         avatar: `https://i.pravatar.cc/150?img=${i}`,
         email: `${selectedName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
@@ -166,9 +166,7 @@ const generateMockUserData = (count: number): Users[] => {
       //       : Math.random() > 0.5
       //         ? "Vacation"
       //         : "Inactive",
-      createdAt: new Date(
-        new Date().getTime() - Math.random() * (24 * 60 * 60 * 1000 * 40),
-      ),
+      createdAt: "04/09/2025, 10:24:17 AM",
       // teams: [
       //   "Design",
       //   "Product",

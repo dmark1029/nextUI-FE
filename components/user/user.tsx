@@ -24,7 +24,6 @@ import {
   Pagination,
   Divider,
   Tooltip,
-  useButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -42,7 +41,13 @@ import {
   Spinner,
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useRef, useCallback, useState } from "react";
+import React, {
+  useMemo,
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
 
@@ -203,19 +208,40 @@ export default function UserTable({ users }: UserProps) {
   const [avatarPreview, setAvatarPreview] = useState("");
   const [isRemove, setIsRemove] = useState(false);
   const [showPermission, setPermissionModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [updatedUserId, updateUserId] = useState<any>(null);
+  const [updatedUserName, updateUserName] = useState<any>(null);
+  const [updatedSubnetName, updateSubnetName] = useState<any>(null);
+  const [updatedRole, updateRole] = useState<any>(null);
+  const [isModified, setIsModified] = useState(false);
 
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
+  useEffect(() => {
+    if (!selectedRow) return;
+    const modified =
+      updatedUserId !== selectedRow.userID ||
+      updatedUserName !== selectedRow.username.name ||
+      updatedSubnetName !== selectedRow.subnets ||
+      updatedRole !== selectedRow.role;
 
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
+    setIsModified(modified);
+  }, [updatedUserId, updatedUserName, updatedSubnetName, updatedRole]);
 
-      setAvatarPreview(previewUrl);
-    }
+  const showUserDetail = (item: any) => {
+    setSelectedRow(item);
+    updateUserId(item.userID);
+    updateUserName(item.username.name);
+    updateSubnetName(item.subnets);
+    updateRole(item.role);
+    showUserDetailModal();
   };
-  const handleSelectRole = (e: any) => {
-    setSelectedRole(e.target.value);
-  };
+
+  const {
+    isOpen: isShowUserDetails,
+    onOpenChange: onShowUserDetails,
+    onClose: closeUserDetailModal,
+    onOpen: showUserDetailModal,
+  } = useDisclosure();
+
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -289,11 +315,7 @@ export default function UserTable({ users }: UserProps) {
       if (col === "username") {
         first = a[col].name;
         second = b[col].name;
-      } else if (sortDescriptor.column === "externalWorkerID") {
-        first = +a.externalWorkerID.split("EXT-")[1];
-        second = +b.externalWorkerID.split("EXT-")[1];
       }
-
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -322,9 +344,6 @@ export default function UserTable({ users }: UserProps) {
   const eyesRef = useRef<HTMLButtonElement | null>(null);
   const editRef = useRef<HTMLButtonElement | null>(null);
   const deleteRef = useRef<HTMLButtonElement | null>(null);
-  const { getButtonProps: getEyesProps } = useButton({ ref: eyesRef });
-  const { getButtonProps: getEditProps } = useButton({ ref: editRef });
-  const { getButtonProps: getDeleteProps } = useButton({ ref: deleteRef });
   const getMemberInfoProps = useMemoizedCallback(() => ({
     onClick: handleMemberClick,
   }));
@@ -350,7 +369,6 @@ export default function UserTable({ users }: UserProps) {
 
       switch (userKey) {
         case "userID":
-        case "externalWorkerID":
           return <CopyText>{cellValue}</CopyText>;
         case "username":
           return (
@@ -367,20 +385,7 @@ export default function UserTable({ users }: UserProps) {
             </User>
           );
         case "createdAt":
-          return (
-            <div className="flex items-center gap-1">
-              <p className="text-nowrap text-small capitalize text-default-foreground">
-                {new Intl.DateTimeFormat("en-US", {
-                  month: "2-digit",
-                  day: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                }).format(cellValue as unknown as Date)}
-              </p>
-            </div>
-          );
+          return <div className="text-default-foreground">{cellValue}</div>;
         case "subnets":
           return (
             <div className="flex items-center gap-2">
@@ -448,7 +453,7 @@ export default function UserTable({ users }: UserProps) {
             <div className="flex items-center justify-end gap-2">
               <Button
                 color="primary"
-                size="sm"
+                size="md"
                 variant="shadow"
                 onPress={() => setPermission()}
               >
@@ -664,40 +669,7 @@ export default function UserTable({ users }: UserProps) {
               </Dropdown>
             </div>
           </div>
-
           <Divider className="h-5" orientation="vertical" />
-
-          <div className="whitespace-nowrap text-sm text-default-800">
-            {filterSelectedKeys === "all"
-              ? "All items selected"
-              : `${filterSelectedKeys.size} Selected`}
-          </div>
-
-          {(filterSelectedKeys === "all" || filterSelectedKeys.size > 0) && (
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  className="bg-default-100 text-default-800"
-                  endContent={
-                    <Icon
-                      className="text-default-400"
-                      icon="solar:alt-arrow-down-linear"
-                    />
-                  }
-                  size="sm"
-                  variant="flat"
-                >
-                  Selected Actions
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Selected Actions">
-                <DropdownItem key="send-email">Send email</DropdownItem>
-                <DropdownItem key="pay-invoices">Pay invoices</DropdownItem>
-                <DropdownItem key="bulk-edit">Bulk edit</DropdownItem>
-                <DropdownItem key="end-contract">End contract</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          )}
         </div>
       </div>
     );
@@ -721,7 +693,7 @@ export default function UserTable({ users }: UserProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Users</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Users</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -805,7 +777,7 @@ export default function UserTable({ users }: UserProps) {
         isDismissable={false}
         isOpen={isOpen}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onOpenChange}
       >
         <ModalContent>
@@ -965,6 +937,140 @@ export default function UserTable({ users }: UserProps) {
         </ModalContent>
       </Modal>
 
+      {/* User Detail Modal */}
+
+      <Modal
+        backdrop={backdrop}
+        isDismissable={false}
+        isOpen={isShowUserDetails}
+        placement="top-center"
+        size="2xl"
+        onOpenChange={onShowUserDetails}
+      >
+        <ModalContent>
+          {(closeSubnetDetailModal) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                User Detail
+              </ModalHeader>
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    User ID:
+                  </label>
+                  <Input
+                    errorMessage="Please enter a valid username"
+                    name="username"
+                    type="text"
+                    value={updatedUserId}
+                    variant="bordered"
+                    onChange={(e) => updateUserId(e.target.value)}
+                  />
+                  <label
+                    className="min-w-[80px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Name:
+                  </label>
+                  <Input
+                    errorMessage="Please enter a valid username"
+                    name="username"
+                    type="text"
+                    value={updatedUserName}
+                    variant="bordered"
+                    onChange={(e) => updateUserName(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Name:
+                  </label>
+                  <Input
+                    errorMessage="Please enter a valid username"
+                    name="username"
+                    type="text"
+                    value={updatedSubnetName}
+                    variant="bordered"
+                    onChange={(e) => updateSubnetName(e.target.value)}
+                  />
+
+                  <label
+                    className="min-w-[80px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Role:
+                  </label>
+                  <Select
+                    selectedKeys={
+                      updatedRole
+                        ? new Set([updatedRole.toLowerCase()])
+                        : new Set()
+                    }
+                    variant="bordered"
+                    onSelectionChange={(keys) => {
+                      const selected = Array.from(keys)[0];
+
+                      updateRole(
+                        selected.toString().charAt(0).toUpperCase() +
+                          selected.toString().slice(1),
+                      );
+                    }}
+                  >
+                    <SelectItem key="admin">Admin</SelectItem>
+                    <SelectItem key="user">User</SelectItem>
+                  </Select>
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Created At:
+                  </label>
+
+                  <Input
+                    isReadOnly
+                    name="createdAt"
+                    type="text"
+                    value={selectedRow.startDate}
+                    variant="flat"
+                  />
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                {isModified && (
+                  <Button
+                    color="success"
+                    startContent={<UserIcon />}
+                    onPress={() => confirmDelete()}
+                  >
+                    Update
+                  </Button>
+                )}
+                <Button
+                  color="danger"
+                  startContent={<UserIcon />}
+                  onPress={() => confirmDelete()}
+                >
+                  Delete
+                </Button>
+                <Button color="primary" onPress={closeSubnetDetailModal}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
       {/* Remove User Modal */}
 
       <Modal
@@ -1018,37 +1124,6 @@ export default function UserTable({ users }: UserProps) {
                 Set Permission
               </ModalHeader>
               <ModalBody className="max-h-[500px] overflow-auto max-w-[800px]">
-                {/* <Table aria-label="Permissions Table">
-                  <TableHeader>
-                    <TableColumn className="text-center w-[150px]">User</TableColumn>
-                    <TableColumn className="text-center">Read</TableColumn>
-                    <TableColumn className="text-center">Write</TableColumn>
-                    <TableColumn className="text-center">Delete</TableColumn>
-                    <TableColumn className="text-center">Read</TableColumn>
-                    <TableColumn className="text-center">Write</TableColumn>
-                    <TableColumn className="text-center">Delete</TableColumn>
-                    <TableColumn className="text-center">Read</TableColumn>
-                    <TableColumn className="text-center">Write</TableColumn>
-                    <TableColumn className="text-center">Delete</TableColumn>
-                  </TableHeader>
-                  <TableBody>
-                    {mockUsers.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-semibold">{user.name}</TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                        <TableCell className="text-center"><Checkbox /></TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table> */}
-                {/* NextUI Table (Second Row & Data) */}
                 <Table aria-label="Permissions Table">
                   <TableHeader>
                     <TableColumn className="text-center min-w-36 max-w-36">
@@ -1056,39 +1131,39 @@ export default function UserTable({ users }: UserProps) {
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 invisible">Instance</p>
-                      <p className="mb-2">Read</p>
+                      <p className="mb-2 text-sm">Read</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 text-green-500">Instance</p>
-                      <p className="mb-2">Write</p>
+                      <p className="mb-2 text-sm">Write</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 invisible">Instance</p>
-                      <p className="mb-2">Delete</p>
+                      <p className="mb-2 text-sm">Delete</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 invisible">Miner</p>
-                      <p className="mb-2">Read</p>
+                      <p className="mb-2 text-sm">Read</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 text-green-500">Miner</p>
-                      <p className="mb-2">Write</p>
+                      <p className="mb-2 text-sm">Write</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 invisible">Miner</p>
-                      <p className="mb-2">Delete</p>
+                      <p className="mb-2 text-sm">Delete</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 invisible">Wallet</p>
-                      <p className="mb-2">Read</p>
+                      <p className="mb-2 text-sm">Read</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 text-green-500">Wallet</p>
-                      <p className="mb-2">Write</p>
+                      <p className="mb-2 text-sm">Write</p>
                     </TableColumn>
                     <TableColumn className="text-center">
                       <p className="text-xl my-2 invisible">Wallet</p>
-                      <p className="mb-2">Delete</p>
+                      <p className="mb-2 text-sm">Delete</p>
                     </TableColumn>
                   </TableHeader>
                   <TableBody loadingContent={<Spinner label="Loading..." />}>
@@ -1150,11 +1225,9 @@ export default function UserTable({ users }: UserProps) {
         aria-label="Example table with custom cells, pagination and sorting"
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
-        classNames={{
-          td: "before:bg-transparent",
-        }}
+        color="primary"
         selectedKeys={filterSelectedKeys}
-        selectionMode="multiple"
+        selectionMode="single"
         sortDescriptor={sortDescriptor}
         topContent={topContent}
         topContentPlacement="outside"
@@ -1170,6 +1243,7 @@ export default function UserTable({ users }: UserProps) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -1204,9 +1278,15 @@ export default function UserTable({ users }: UserProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showUserDetail(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

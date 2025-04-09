@@ -250,7 +250,10 @@ export default function OpexTable({ opexData }: OpexProp) {
                 return (
                   <Chip
                     key={wallet}
-                    className="rounded-xl px-[6px] capitalize text-default-800"
+                    classNames={{
+                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                      content: "drop-shadow shadow-black text-white",
+                    }}
                     color="primary"
                     size="sm"
                     variant="bordered"
@@ -263,7 +266,10 @@ export default function OpexTable({ opexData }: OpexProp) {
                 return (
                   <Chip
                     key={wallet}
-                    className="text-default-500"
+                    classNames={{
+                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                      content: "drop-shadow shadow-black text-white",
+                    }}
                     color="primary"
                     size="sm"
                     variant="bordered"
@@ -512,7 +518,7 @@ export default function OpexTable({ opexData }: OpexProp) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">OpEx</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">OpEx</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -603,7 +609,7 @@ export default function OpexTable({ opexData }: OpexProp) {
         isDismissable={false}
         isOpen={isShowCreateNewSubnetModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
@@ -724,7 +730,7 @@ export default function OpexTable({ opexData }: OpexProp) {
         isDismissable={false}
         isOpen={isOpexDetailModalOpen}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowOpexDetail}
       >
         <ModalContent>
@@ -733,16 +739,20 @@ export default function OpexTable({ opexData }: OpexProp) {
               <ModalHeader className="flex flex-col gap-1">
                 OpEx Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
                 <div className="flex w-full items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    OpEx Balance:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <div className="pointer-events-none flex items-center">
                         <span className="text-default-400 text-small">tao</span>
                       </div>
                     }
-                    label="OpEx Balance: "
                     labelPlacement="outside-left"
                     name="opexBalance"
                     type="number"
@@ -763,22 +773,45 @@ export default function OpexTable({ opexData }: OpexProp) {
                     value={selectedRow.opexBalance}
                     variant="flat"
                   />
-                  <Button color="danger" onPress={closeOpexDetailModal}>
+                  <Button
+                    className="text-sm min-w-[110px]"
+                    color="danger"
+                    onPress={closeOpexDetailModal}
+                  >
                     Sync
                   </Button>
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Staked Alpha:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="OpEx Staked Alpha"
                     name="opex_staked_alpha"
                     type="number"
                     value={selectedRow.opexStakedAlpha}
                     variant="flat"
                   />
+                  <Button
+                    className="text-sm min-w-[110px]"
+                    color="primary"
+                    onPress={closeOpexDetailModal}
+                  >
+                    Upgrade
+                  </Button>
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    OpEx Wallet:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -793,29 +826,33 @@ export default function OpexTable({ opexData }: OpexProp) {
                         )}
                       </button>
                     }
-                    label="OpEx Wallet"
                     name="walletHotkey"
                     type="text"
                     value={selectedRow.opexWallet}
                     variant="flat"
                   />
-                  <Button color="primary" onPress={closeOpexDetailModal}>
-                    Upgrade
-                  </Button>
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[180px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Total Collectable Alpha:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Total Collectable Alpha"
                     name="total_collectable_alpha"
                     type="number"
                     value={selectedRow.totalCollectableAlpha}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[200px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Total Collectable Wallets:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Total Collectable Wallets"
                     name="total_collectable_wallets"
                     type="number"
                     value={selectedRow.userSubnets.length}
@@ -823,12 +860,23 @@ export default function OpexTable({ opexData }: OpexProp) {
                   />
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 text-sm">Auto Collect</p>
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Auto Collect:
+                  </label>
                   <Checkbox isSelected={Boolean(selectedRow.autoCollect)} />
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20 text-sm">Action: </p>
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Action:
+                  </label>
                   <Button
+                    className="min-w-[90px] text-sm"
                     color="secondary"
                     size="sm"
                     variant="shadow"
@@ -837,6 +885,7 @@ export default function OpexTable({ opexData }: OpexProp) {
                     Restart
                   </Button>
                   <Button
+                    className="min-w-[90px] text-sm"
                     color="primary"
                     size="sm"
                     variant="shadow"
@@ -845,6 +894,7 @@ export default function OpexTable({ opexData }: OpexProp) {
                     Start
                   </Button>
                   <Button
+                    className="min-w-[90px] text-sm"
                     color="warning"
                     size="sm"
                     variant="shadow"
@@ -853,6 +903,7 @@ export default function OpexTable({ opexData }: OpexProp) {
                     Stop
                   </Button>
                   <Button
+                    className="min-w-[90px] text-sm"
                     color="danger"
                     size="sm"
                     variant="shadow"
@@ -895,6 +946,7 @@ export default function OpexTable({ opexData }: OpexProp) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -929,9 +981,15 @@ export default function OpexTable({ opexData }: OpexProp) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showSubnetDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

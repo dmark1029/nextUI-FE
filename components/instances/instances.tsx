@@ -63,6 +63,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
   const showInstanceDetails = (item: any) => {
     setCopiedValue("");
     setSelectedRow(item);
+    console.log("item", item);
     showInstanceDetailModal();
   };
 
@@ -183,7 +184,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
 
     if (filterValue) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.username.name.toLowerCase().includes(filterValue.toLowerCase()),
+        user.subnetName.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
 
@@ -359,7 +360,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
   const topContent = useMemo(() => {
     return (
       <div className="flex items-center gap-4 overflow-auto px-[6px] py-[4px]">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-4">
             <Input
               className="min-w-[200px]"
@@ -528,7 +529,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Instances</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Instances</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -561,7 +562,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
           onChange={setPage}
         />
         <div className="flex items-center justify-end gap-6">
-          <span className="text-small text-default-400">
+          <span className="text-baseall text-default-400">
             {filterSelectedKeys === "all"
               ? "All items selected"
               : `${filterSelectedKeys.size} of ${filteredItems.length} selected`}
@@ -612,65 +613,71 @@ export default function InstanceTable({ instances }: InstanceProps) {
       <Modal
         backdrop={backdrop}
         classNames={{
-          body: "rounded-[15px] border-1 m-[9px] m-5 py-5",
+          body: "rounded-[15px] border-1 m-[9px] m-5 py-5 gap-5",
         }}
         isDismissable={false}
         isOpen={isShowCreateNewSubnetModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
           {(closeCreateNewSubnetModal) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Create New Subnet
+                Create New Instance
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet No:
+                  </label>
                   <Input
                     key="subnet_no"
-                    isRequired
-                    label="Subnet No"
                     labelPlacement="outside-left"
                     type="text"
                   />
-
-                  <Input
-                    key="subnet_name"
-                    isRequired
-                    label="Subnet Name"
-                    labelPlacement="outside-left"
-                    type="text"
-                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Name:
+                  </label>
+                  <Input key="subnet_name" type="text" />
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Emission:
+                  </label>
                   <Input
                     key="subnet_emission"
-                    isRequired
                     endContent={<p>%</p>}
-                    label="Subnet Emission"
-                    labelPlacement="outside-left"
                     type="number"
                   />
-                  <Input
-                    key="reg_cost"
-                    isRequired
-                    endContent={<p>tao</p>}
-                    label="Reg Cost"
-                    labelPlacement="outside-left"
-                    type="number"
-                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Reg Cost:
+                  </label>
+                  <Input key="reg_cost" endContent={<p>tao</p>} type="number" />
                 </div>
 
-                <div className="flex w-full flex-wrap md:flex-nowrap pl-2 mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select
-                    isRequired
-                    className="max-w-full"
-                    label="Engineers"
-                    labelPlacement="outside-left"
+                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
+                    Engineers:
+                  </label>
+                  <Select className="max-w-full">
                     <SelectItem key="1">1</SelectItem>
                     <SelectItem key="2">2</SelectItem>
                   </Select>
@@ -844,71 +851,154 @@ export default function InstanceTable({ instances }: InstanceProps) {
         isDismissable={false}
         isOpen={isShowSubnetDetails}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowSubnetDetails}
       >
         <ModalContent>
           {(closeSubnetDetailModal) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-lg">
                 Instance Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Instance Name:
+                  </label>
                   <Input
-                    isReadOnly
-                    errorMessage="Please enter a valid username"
-                    label="Subnet Name: "
-                    labelPlacement="outside-left"
-                    name="username"
+                    name="instance name"
                     type="text"
                     value={selectedRow.username}
+                    variant="bordered"
+                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Name:
+                  </label>
+                  <Input
+                    errorMessage="Please enter a valid username"
+                    name="subnet name"
+                    type="text"
+                    value={selectedRow.subnetName}
                     variant="bordered"
                   />
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 text-sm">SPEC: </p>
-                  <Chip
-                    classNames={{
-                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
-                      content: "drop-shadow shadow-black text-white",
-                    }}
-                    variant="shadow"
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
-                    CPU
-                  </Chip>
-                  <Chip
-                    classNames={{
-                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
-                      content: "drop-shadow shadow-black text-white",
-                    }}
-                    variant="shadow"
+                    Type:
+                  </label>
+                  <Input
+                    name="instance name"
+                    type="text"
+                    value={selectedRow.type}
+                    variant="bordered"
+                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
-                    VRAM
-                  </Chip>
-                  <Chip
-                    classNames={{
-                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
-                      content: "drop-shadow shadow-black text-white",
-                    }}
-                    variant="shadow"
-                  >
-                    RAM
-                  </Chip>
-                  <Chip
-                    classNames={{
-                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
-                      content: "drop-shadow shadow-black text-white",
-                    }}
-                    variant="shadow"
-                  >
-                    HARD
-                  </Chip>
+                    IP:
+                  </label>
+                  <Input
+                    errorMessage="Please enter a valid username"
+                    name="subnet name"
+                    type="text"
+                    value={selectedRow.ip}
+                    variant="bordered"
+                  />
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 text-sm">Usage: </p>
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Instance ID:
+                  </label>
+                  <Input
+                    name="instance name"
+                    type="text"
+                    value={selectedRow.instanceId}
+                    variant="bordered"
+                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Port:
+                  </label>
+                  <Input
+                    errorMessage="Please enter a valid username"
+                    name="subnet name"
+                    type="text"
+                    value={selectedRow.port}
+                    variant="bordered"
+                  />
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    SPEC:
+                  </label>
+                  <div className="w-full flex items-center gap-4">
+                    <Chip
+                      classNames={{
+                        base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                        content: "drop-shadow shadow-black text-white",
+                      }}
+                      variant="shadow"
+                    >
+                      CPU
+                    </Chip>
+                    <Chip
+                      classNames={{
+                        base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                        content: "drop-shadow shadow-black text-white",
+                      }}
+                      variant="shadow"
+                    >
+                      VRAM
+                    </Chip>
+                    <Chip
+                      classNames={{
+                        base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                        content: "drop-shadow shadow-black text-white",
+                      }}
+                      variant="shadow"
+                    >
+                      RAM
+                    </Chip>
+                    <Chip
+                      classNames={{
+                        base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                        content: "drop-shadow shadow-black text-white",
+                      }}
+                      variant="shadow"
+                    >
+                      HARD
+                    </Chip>
+                  </div>
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Usage:
+                  </label>
                   <Input
                     key="ram"
                     isReadOnly
@@ -934,20 +1024,33 @@ export default function InstanceTable({ instances }: InstanceProps) {
                     value="9"
                   />
                 </div>
-                <Textarea
-                  disableAnimation
-                  disableAutosize
-                  isReadOnly
-                  classNames={{
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  label="Description"
-                  value="hello world"
-                  variant="bordered"
-                />
+                <div className="flex w-full flex-wrap items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Description:
+                  </label>
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    classNames={{
+                      input: "resize-y min-h-[40px]",
+                    }}
+                    value="hello world"
+                    variant="bordered"
+                  />
+                </div>
+
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20 text-sm">PEM: </p>
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    PEM:
+                  </label>
                   <Button
+                    className="w-full"
                     color="primary"
                     size="sm"
                     variant="shadow"
@@ -955,8 +1058,15 @@ export default function InstanceTable({ instances }: InstanceProps) {
                   >
                     Download
                   </Button>
-                  <p className="px-2 text-sm">System Action: </p>
+
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    System Action:
+                  </label>
                   <Button
+                    className="w-full"
                     color="danger"
                     size="sm"
                     variant="shadow"
@@ -966,10 +1076,15 @@ export default function InstanceTable({ instances }: InstanceProps) {
                   </Button>
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20 text-sm">Action: </p>
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Action:
+                  </label>
                   <Button
                     color="success"
-                    size="sm"
+                    size="md"
                     variant="shadow"
                     onPress={closeSubnetDetailModal}
                   >
@@ -977,7 +1092,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
                   </Button>
                   <Button
                     color="warning"
-                    size="sm"
+                    size="md"
                     variant="shadow"
                     onPress={closeSubnetDetailModal}
                   >
@@ -985,7 +1100,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
                   </Button>
                   <Button
                     color="danger"
-                    size="sm"
+                    size="md"
                     variant="shadow"
                     onPress={closeSubnetDetailModal}
                   >
@@ -993,8 +1108,13 @@ export default function InstanceTable({ instances }: InstanceProps) {
                   </Button>
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[150px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Login Command:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -1010,8 +1130,6 @@ export default function InstanceTable({ instances }: InstanceProps) {
                       </button>
                     }
                     errorMessage="Please enter a valid username"
-                    label="Login Command:"
-                    labelPlacement="outside-left"
                     name="username"
                     type="text"
                     value="ssh -i test.com XXXX XXXX"
@@ -1051,6 +1169,7 @@ export default function InstanceTable({ instances }: InstanceProps) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -1085,9 +1204,15 @@ export default function InstanceTable({ instances }: InstanceProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showInstanceDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showInstanceDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

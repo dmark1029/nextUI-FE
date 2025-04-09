@@ -41,7 +41,13 @@ import {
   Spinner,
 } from "@heroui/react";
 import { SearchIcon } from "@heroui/shared-icons";
-import React, { useMemo, useRef, useCallback, useState } from "react";
+import React, {
+  useMemo,
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/react";
 
@@ -149,15 +155,57 @@ export const LockIcon = (props: any) => {
 
 export default function SubnetTable({ users }: SubnetProps) {
   const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [selectedUserName, setSelectedUserName] = useState<any>(null);
+  const [selectedEmission, setSelectedEmission] = useState<any>(null);
+  const [selectedRegCost, setSelectedRegCost] = useState<any>(null);
+  const [selectedEngineers, setSelectedEngineers] = useState<any>([]);
+  const [isModified, setIsModified] = useState(false);
+
+  const engineerRoles = [
+    "Design",
+    "Product",
+    "Marketing",
+    "Management",
+    "Engineering",
+    "Sales",
+    "Support",
+    "Other",
+    "Alex",
+    "Danijel",
+  ];
+  const engineers = engineerRoles.map((role) => ({ key: role, label: role }));
   const showSubnetDetails = (item: any) => {
-    setSelectedRow((prevRow: { id: any }) =>
-      prevRow && prevRow.id === item.id ? null : item,
-    );
+    setSelectedRow(item);
+    setSelectedUserName(item.username);
+    setSelectedEmission(item.emission);
+    setSelectedRegCost(item.reg_cost);
+    setSelectedEngineers(item.engineers);
     showSubnetDetailModal();
-    console.log("item", item);
+  };
+  const handleSelectionChange = (keys: any) => {
+    if (keys === "all") {
+      setSelectedEngineers(engineerRoles);
+      console.log("1", selectedEngineers);
+    } else {
+      setSelectedEngineers(Array.from(keys as Set<string>));
+      console.log("2", selectedEngineers);
+    }
   };
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  useEffect(() => {
+    if (!selectedRow) return;
+    const modified =
+      selectedUserName !== selectedRow.username ||
+      selectedEmission !== selectedRow.emission ||
+      selectedRegCost !== selectedRow.reg_cost ||
+      selectedEngineers !== selectedRow.engineers;
+
+    setIsModified(modified);
+  }, [selectedUserName, selectedEmission, selectedRegCost, selectedEngineers]);
+
+  const updateSubnetDetail = () => {
+    console.log("selected option", selectedEngineers);
+  };
   const {
     isOpen: isRemoveModalOpen,
     onOpenChange: onRemoveModalChange,
@@ -371,7 +419,7 @@ export default function SubnetTable({ users }: SubnetProps) {
         case "createdAt":
           return (
             <div className="flex items-center gap-1">
-              <p className="text-nowrap text-small capitalize text-default-foreground">
+              <p className="text-nowrap text-baseall capitalize text-default-foreground">
                 {new Intl.DateTimeFormat("en-US", {
                   month: "2-digit",
                   day: "2-digit",
@@ -386,7 +434,7 @@ export default function SubnetTable({ users }: SubnetProps) {
         case "emission":
           return (
             <div className="flex items-center gap-2">
-              <p className="text-nowrap text-small text-default-foreground">
+              <p className="text-nowrap text-baseall text-default-foreground">
                 {user[userKey]}
               </p>
             </div>
@@ -401,7 +449,7 @@ export default function SubnetTable({ users }: SubnetProps) {
                       key={team}
                       className="rounded-xl bg-default-100 px-[6px] capitalize text-default-800"
                       color="primary"
-                      size="sm"
+                      size="md"
                       variant="flat"
                     >
                       {team}
@@ -414,7 +462,7 @@ export default function SubnetTable({ users }: SubnetProps) {
                       key={team}
                       className="text-default-500"
                       color="primary"
-                      size="sm"
+                      size="md"
                       variant="flat"
                     >
                       {`+${team.length - 3}`}
@@ -663,7 +711,7 @@ export default function SubnetTable({ users }: SubnetProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Subnets</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Subnets</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -696,7 +744,7 @@ export default function SubnetTable({ users }: SubnetProps) {
           onChange={setPage}
         />
         <div className="flex items-center justify-end gap-6">
-          <span className="text-small text-default-400">
+          <span className="text-baseall text-default-400">
             {filterSelectedKeys === "all"
               ? "All items selected"
               : `${filterSelectedKeys.size} of ${filteredItems.length} selected`}
@@ -747,12 +795,12 @@ export default function SubnetTable({ users }: SubnetProps) {
       <Modal
         backdrop={backdrop}
         classNames={{
-          body: "rounded-[15px] border-1 m-[9px] m-5 py-5",
+          body: "rounded-[15px] border-1 m-[9px] m-5 py-5 gap-5",
         }}
         isDismissable={false}
         isOpen={isShowCreateNewSubnetModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
@@ -763,49 +811,58 @@ export default function SubnetTable({ users }: SubnetProps) {
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    key="subnet_no"
-                    isRequired
-                    label="Subnet No"
-                    labelPlacement="outside-left"
-                    type="text"
-                  />
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet No:
+                  </label>
+                  <Input key="subnet_no" isRequired type="text" />
 
-                  <Input
-                    key="subnet_name"
-                    isRequired
-                    label="Subnet Name"
-                    labelPlacement="outside-left"
-                    type="text"
-                  />
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Name:
+                  </label>
+                  <Input key="subnet_name" isRequired type="text" />
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Emission:
+                  </label>
                   <Input
                     key="subnet_emission"
                     isRequired
                     endContent={<p>%</p>}
-                    label="Subnet Emission"
-                    labelPlacement="outside-left"
                     type="number"
                   />
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Reg Cost:
+                  </label>
                   <Input
                     key="reg_cost"
                     isRequired
                     endContent={<p>tao</p>}
-                    label="Reg Cost"
-                    labelPlacement="outside-left"
                     type="number"
                   />
                 </div>
 
-                <div className="flex w-full flex-wrap md:flex-nowrap pl-2 mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select
-                    isRequired
-                    className="max-w-full"
-                    label="Engineers"
-                    labelPlacement="outside-left"
+                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
+                  <label
+                    className="min-w-[130px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
+                    Engineers:
+                  </label>
+                  <Select isRequired className="max-w-full">
                     <SelectItem key="1">1</SelectItem>
                     <SelectItem key="2">2</SelectItem>
                   </Select>
@@ -979,7 +1036,7 @@ export default function SubnetTable({ users }: SubnetProps) {
         isDismissable={false}
         isOpen={isShowSubnetDetails}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowSubnetDetails}
       >
         <ModalContent>
@@ -988,9 +1045,14 @@ export default function SubnetTable({ users }: SubnetProps) {
               <ModalHeader className="flex flex-col gap-1">
                 Subnet Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
                 <div className="flex w-full flex-wrap items-end md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2">Github URL: </p>
+                  <label
+                    className="min-w-[150px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Github URL:
+                  </label>
                   <Link
                     isExternal
                     showAnchorIcon
@@ -1000,13 +1062,60 @@ export default function SubnetTable({ users }: SubnetProps) {
                   </Link>
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2">Alpha Token Price: </p>
+                  <label
+                    className="min-w-[150px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Name:
+                  </label>
+                  <Input
+                    name="username"
+                    type="text"
+                    value={selectedUserName}
+                    variant="bordered"
+                    onChange={(e) => setSelectedUserName(e.target.value)}
+                  />
+                </div>
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[150px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Emission(%):
+                  </label>
+                  <Input
+                    name="emission"
+                    type="number"
+                    value={selectedEmission}
+                    variant="bordered"
+                    onChange={(e) => setSelectedEmission(e.target.value)}
+                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Reg Cost(tao):
+                  </label>
+                  <Input
+                    name="reg cost"
+                    type="number"
+                    value={selectedRegCost}
+                    variant="bordered"
+                    onChange={(e) => setSelectedRegCost(e.target.value)}
+                  />
+                </div>
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[150px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Alpha Token Price:
+                  </label>
                   <Input
                     isReadOnly
                     className="max-w-[120px]"
                     endContent={<p>tao</p>}
                     errorMessage="Please enter a valid username"
-                    labelPlacement="outside-left"
                     name="username"
                     type="text"
                     value="340"
@@ -1019,7 +1128,7 @@ export default function SubnetTable({ users }: SubnetProps) {
                     labelPlacement="outside-left"
                     startContent={
                       <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">$</span>
+                        <span className="text-default-400 text-base">$</span>
                       </div>
                     }
                     type="number"
@@ -1027,118 +1136,43 @@ export default function SubnetTable({ users }: SubnetProps) {
                     variant="bordered"
                   />
                 </div>
-                {/* <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20">Instances: </p>
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="healthy"
-                    className="max-w-[120px]"
-                    color="success"
-                    label="Healthy"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="unhealthy"
-                    className="max-w-[120px]"
-                    color="danger"
-                    label="Unhealty"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="Total"
-                    className="max-w-[120px]"
-                    color="default"
-                    label="Total"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20">Wallets: </p>
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="healthy"
-                    className="max-w-[120px]"
-                    color="success"
-                    label="Healthy"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="8"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="unhealthy"
-                    className="max-w-[120px]"
-                    color="danger"
-                    label="Unhealty"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="7"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="Total"
-                    className="max-w-[120px]"
-                    color="default"
-                    label="Total"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="15"
-                  />
+                  <label
+                    className="min-w-[150px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Engineers:
+                  </label>
+                  <Select
+                    classNames={{
+                      trigger: "min-h-12 py-2",
+                    }}
+                    isMultiline={true}
+                    items={engineers}
+                    placeholder="Select a user"
+                    renderValue={(items) => (
+                      <div className="flex flex-wrap gap-2">
+                        {items.map((item) => (
+                          <Chip key={item.key}>{item.textValue}</Chip>
+                        ))}
+                      </div>
+                    )}
+                    selectedKeys={new Set(selectedEngineers)}
+                    selectionMode="multiple"
+                    variant="bordered"
+                    onSelectionChange={handleSelectionChange}
+                  >
+                    {(engineer) => (
+                      <SelectItem key={engineer.key} textValue={engineer.label}>
+                        {engineer.label}
+                      </SelectItem>
+                    )}
+                  </Select>
                 </div>
-                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20">Miners: </p>
+
+                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-center items-center">
                   <Input
-                    isReadOnly
-                    size="sm"
-                    key="healthy"
-                    className="max-w-[120px]"
-                    color="success"
-                    label="Healthy"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="unhealthy"
-                    className="max-w-[120px]"
-                    color="danger"
-                    label="Unhealty"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                  <Input
-                    isReadOnly
-                    size="sm"
-                    key="Total"
-                    className="max-w-[120px]"
-                    color="default"
-                    label="Total"
-                    labelPlacement="outside-left"
-                    type="text"
-                    value="9"
-                  />
-                </div> */}
-                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Input
-                    isReadOnly
-                    className="max-w-[190px]"
+                    className="max-w-[190px] text-base"
                     label="Total Covering Incentive"
                     labelPlacement="inside"
                     type="number"
@@ -1146,7 +1180,6 @@ export default function SubnetTable({ users }: SubnetProps) {
                     variant="bordered"
                   />
                   <Input
-                    isReadOnly
                     className="max-w-[190px]"
                     endContent={<p>tao</p>}
                     label="Total Income Alpha"
@@ -1160,6 +1193,11 @@ export default function SubnetTable({ users }: SubnetProps) {
                 </div>
               </ModalBody>
               <ModalFooter>
+                {isModified && (
+                  <Button color="primary" onPress={updateSubnetDetail}>
+                    Update
+                  </Button>
+                )}
                 <Button color="danger" onPress={closeSubnetDetailModal}>
                   Close
                 </Button>
@@ -1191,6 +1229,7 @@ export default function SubnetTable({ users }: SubnetProps) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -1225,9 +1264,15 @@ export default function SubnetTable({ users }: SubnetProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showSubnetDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

@@ -245,10 +245,12 @@ export default function KeyTable({ keys }: KeysProps) {
                 return (
                   <Chip
                     key={subnet}
-                    className="rounded-xl px-[6px] capitalize text-default-800"
-                    color="primary"
-                    size="sm"
-                    variant="bordered"
+                    classNames={{
+                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                      content: "drop-shadow shadow-black text-white",
+                    }}
+                    color="success"
+                    variant="shadow"
                   >
                     {subnet}
                   </Chip>
@@ -514,7 +516,7 @@ export default function KeyTable({ keys }: KeysProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Keys</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Keys</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -607,7 +609,7 @@ export default function KeyTable({ keys }: KeysProps) {
         isDismissable={false}
         isOpen={isShowCreateNewSubnetModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
@@ -729,7 +731,7 @@ export default function KeyTable({ keys }: KeysProps) {
         isDismissable={false}
         isOpen={isShowSubnetDetails}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowSubnetDetails}
       >
         <ModalContent>
@@ -738,18 +740,27 @@ export default function KeyTable({ keys }: KeysProps) {
               <ModalHeader className="flex flex-col gap-1">
                 Key Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Subnet Name:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Subnet Name: "
                     name="subnetName"
                     type="text"
                     value={selectedRow.subnetName}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    API Key:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -764,7 +775,6 @@ export default function KeyTable({ keys }: KeysProps) {
                         )}
                       </button>
                     }
-                    label="API Key"
                     name="apiKey"
                     type="text"
                     value={selectedRow.apiKey}
@@ -773,16 +783,25 @@ export default function KeyTable({ keys }: KeysProps) {
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Account Name:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Account Name"
                     name="accountName"
                     type="text"
                     value={selectedRow.accountName}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Password:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -797,29 +816,38 @@ export default function KeyTable({ keys }: KeysProps) {
                         )}
                       </button>
                     }
-                    label="Account Password"
                     name="accountPassword"
                     type={isVisible ? "text" : "password"}
                     value={selectedRow.accountPassword}
                     variant="flat"
                   />
                 </div>
-
-                <Textarea
-                  disableAnimation
-                  disableAutosize
-                  isReadOnly
-                  classNames={{
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  label="Description"
-                  value="hello world"
-                  variant="bordered"
-                />
+                <div className="flex w-full flex-wrap items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Description:
+                  </label>
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    classNames={{
+                      input: "resize-y min-h-[40px]",
+                    }}
+                    value="hello world"
+                    variant="bordered"
+                  />
+                </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Service Link:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -834,7 +862,6 @@ export default function KeyTable({ keys }: KeysProps) {
                         )}
                       </button>
                     }
-                    label="Service Link"
                     name="service_link"
                     type="text"
                     value={selectedRow.serviceLink}
@@ -842,7 +869,12 @@ export default function KeyTable({ keys }: KeysProps) {
                   />
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 text-sm">User Subnets: </p>
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    User Subnets:
+                  </label>
                   {selectedRow.userSubnets.map(
                     (subnet: Subnets, index: number) => (
                       <Chip
@@ -892,6 +924,7 @@ export default function KeyTable({ keys }: KeysProps) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -926,9 +959,15 @@ export default function KeyTable({ keys }: KeysProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showSubnetDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}
