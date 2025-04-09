@@ -34,7 +34,7 @@ export type Users = {
   subnets: string;
   role: "Admin" | "User";
   status: StatusOptions;
-  startDate: string;
+  createdAt: string;
   teams: Teams[];
 };
 
@@ -51,7 +51,7 @@ const mockUsers: Users[] = [
     subnets: "Apex",
     role: "User",
     status: "Active",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Engineering"],
   },
   {
@@ -66,7 +66,7 @@ const mockUsers: Users[] = [
     subnets: "Targon",
     role: "Admin",
     status: "Inactive",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Marketing"],
   },
   {
@@ -81,7 +81,7 @@ const mockUsers: Users[] = [
     subnets: "Chutes",
     role: "User",
     status: "Paused",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["HR"],
   },
   {
@@ -96,7 +96,7 @@ const mockUsers: Users[] = [
     subnets: "Celium",
     role: "User",
     status: "Vacation",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Analytics"],
   },
   {
@@ -111,7 +111,7 @@ const mockUsers: Users[] = [
     subnets: "Dojo",
     role: "Admin",
     status: "Active",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Project Management"],
   },
   {
@@ -126,7 +126,7 @@ const mockUsers: Users[] = [
     subnets: "Gradients",
     role: "User",
     status: "Inactive",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Sales"],
   },
   {
@@ -141,7 +141,7 @@ const mockUsers: Users[] = [
     subnets: "Sturdy",
     role: "Admin",
     status: "Paused",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Design"],
   },
   {
@@ -156,7 +156,7 @@ const mockUsers: Users[] = [
     subnets: "Templar",
     role: "User",
     status: "Active",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Operations"],
   },
   {
@@ -171,7 +171,7 @@ const mockUsers: Users[] = [
     subnets: "France",
     role: "Admin",
     status: "Vacation",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Product"],
   },
   {
@@ -186,7 +186,7 @@ const mockUsers: Users[] = [
     subnets: "404-GEN",
     role: "User",
     status: "Active",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Customer Support"],
   },
   {
@@ -201,7 +201,7 @@ const mockUsers: Users[] = [
     subnets: "Argentina",
     role: "User",
     status: "Active",
-    startDate: new Date().toISOString(),
+    createdAt: "04/09/2025, 10:24:17 AM",
     teams: ["Customer Support"],
   },
 ];

@@ -603,7 +603,7 @@ export default function MinerTable({ miners }: MinerProps) {
     <div className="h-full w-full p-6">
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Miners</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Miners</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -649,11 +649,11 @@ export default function MinerTable({ miners }: MinerProps) {
       {/* Create New Miner Modal */}
       <Modal
         backdrop={isInstalling ? "blur" : "opaque"}
-        classNames={{ body: "rounded-[15px] border-1 m-[9px] m-5 py-5" }}
+        classNames={{ body: "rounded-[15px] border-1 m-[9px] m-5 py-5 gap-5" }}
         isDismissable={!isInstalling}
         isOpen={isShowCreateNewSubnetModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
@@ -675,10 +675,15 @@ export default function MinerTable({ miners }: MinerProps) {
                 ) : (
                   <>
                     <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                      <p className="text-sm min-w-[50px]">Instance: </p>
+                      <label
+                        className="min-w-[90px] text-right text-base"
+                        htmlFor="wallet_name"
+                      >
+                        Instance:
+                      </label>
                       <Select
                         isRequired
-                        className="px-2 min-w-[200px]"
+                        className="min-w-[200px]"
                         defaultSelectedKeys={["123"]}
                       >
                         <SelectItem key="123">123</SelectItem>
@@ -693,10 +698,14 @@ export default function MinerTable({ miners }: MinerProps) {
                       />
                     </div>
                     <div className="flex w-full flex-wrap justify-between items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                      <p className="text-sm min-w-[60px]">Wallet: </p>
+                      <label
+                        className="min-w-[90px] text-right text-base"
+                        htmlFor="wallet_name"
+                      >
+                        Wallet:
+                      </label>
                       <Input
                         key="name"
-                        isRequired
                         placeholder="Wallet Address"
                         type="text"
                       />
@@ -717,7 +726,12 @@ export default function MinerTable({ miners }: MinerProps) {
                       </Button>
                     </div>
                     <div className="flex w-full flex-wrap justify-between items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                      <p className="text-sm min-w-[60px]">UID: </p>
+                      <label
+                        className="min-w-[90px] text-right text-base"
+                        htmlFor="wallet_name"
+                      >
+                        UID:
+                      </label>
                       <Input
                         key="uid"
                         isRequired
@@ -725,10 +739,15 @@ export default function MinerTable({ miners }: MinerProps) {
                         type="number"
                         onChange={(e) => setUID(e.target.value)}
                       />
-                      <p className="text-sm">Port: </p>
+                      <label
+                        className="min-w-[50px] text-right text-base"
+                        htmlFor="wallet_name"
+                      >
+                        Port:
+                      </label>
                       <Select
                         isRequired
-                        className="px-2 min-w-[150px]"
+                        className="min-w-[150px]"
                         defaultSelectedKeys={["123"]}
                       >
                         <SelectItem key="123">123</SelectItem>
@@ -738,13 +757,23 @@ export default function MinerTable({ miners }: MinerProps) {
                     </div>
                     {!uid && (
                       <div className="flex w-full flex-wrap justify-start items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                        <p className="text-sm min-w-[60px] invisible">UID: </p>
+                        <label
+                          className="min-w-[90px] text-right text-base invisible"
+                          htmlFor="wallet_name"
+                        >
+                          UID:
+                        </label>
                         <Button color="primary">Register</Button>
-                        <p className="text-sm">(Cost: 0.1 tao)</p>
+                        <p className="text-base">(Cost: 0.1 tao)</p>
                       </div>
                     )}
                     <div className="flex w-full flex-wrap justify-start items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                      <p className="text-sm min-w-[150px]">Load env file: </p>
+                      <label
+                        className="w-[90px] text-right text-base"
+                        htmlFor="wallet_name"
+                      >
+                        Load env...
+                      </label>
                       <input
                         ref={envFileRef}
                         className="max-w-[150px]"
@@ -763,13 +792,20 @@ export default function MinerTable({ miners }: MinerProps) {
                         Import ....
                       </Button>
                     </div>
-                    <Textarea
-                      disableAnimation
-                      disableAutosize
-                      classNames={{ input: "resize-y min-h-[40px]" }}
-                      label="Description"
-                      variant="bordered"
-                    />
+                    <div className="flex w-full flex-wrap justify-start items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                      <label
+                        className="min-w-[90px] text-right text-base"
+                        htmlFor="wallet_name"
+                      >
+                        Description
+                      </label>
+                      <Textarea
+                        disableAnimation
+                        disableAutosize
+                        classNames={{ input: "resize-y min-h-[40px]" }}
+                        variant="bordered"
+                      />
+                    </div>
                   </>
                 )}
               </ModalBody>
@@ -790,12 +826,12 @@ export default function MinerTable({ miners }: MinerProps) {
       <Modal
         backdrop={backdrop}
         classNames={{
-          body: "rounded-[15px] border-1 m-[9px] m-5 py-5",
+          body: "rounded-[15px] border-1 m-[9px] m-5 py-5 gap-5",
         }}
         isDismissable={false}
         isOpen={isSyncRepoModalOpen}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onSyncRepoModalChange}
       >
         <ModalContent>
@@ -806,14 +842,13 @@ export default function MinerTable({ miners }: MinerProps) {
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    key="name"
-                    isRequired
-                    label="PR Link"
-                    labelPlacement="outside-left"
-                    placeholder="Wallet Address"
-                    type="text"
-                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    PR Link:
+                  </label>
+                  <Input key="name" placeholder="Wallet Address" type="text" />
                   <Checkbox
                     classNames={{
                       label: "text-small",
@@ -831,13 +866,13 @@ export default function MinerTable({ miners }: MinerProps) {
                   </Checkbox>
                 </div>
                 <div className="flex w-1/2 flex-wrap justify-between items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Select
-                    isRequired
-                    className="px-2 min-w-[150px]"
-                    defaultSelectedKeys={["123"]}
-                    label="Miners"
-                    labelPlacement="outside-left"
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
+                    Miners:
+                  </label>
+                  <Select defaultSelectedKeys={["123"]}>
                     <SelectItem key="123">123</SelectItem>
                     <SelectItem key="456">456</SelectItem>
                     <SelectItem key="789">789</SelectItem>
@@ -895,7 +930,7 @@ export default function MinerTable({ miners }: MinerProps) {
         isDismissable={false}
         isOpen={isShowSubnetDetails}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowSubnetDetails}
       >
         <ModalContent>
@@ -904,9 +939,14 @@ export default function MinerTable({ miners }: MinerProps) {
               <ModalHeader className="flex flex-col gap-1">
                 Miner Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
-                <div className="flex w-full flex-wrap items-end md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2">Base URL: </p>
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Base URL:
+                  </label>
                   <Link
                     isExternal
                     showAnchorIcon
@@ -916,25 +956,26 @@ export default function MinerTable({ miners }: MinerProps) {
                   </Link>
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Instance ID:
+                  </label>
                   <Input
                     isReadOnly
-                    label="UID"
-                    name="uid"
-                    type="number"
-                    value={selectedRow.uid}
-                    variant="flat"
-                  />
-                  <Input
-                    isReadOnly
-                    label="Instance ID"
                     name="instanceID"
                     type="string"
                     value={selectedRow.instanceID}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Instance IP:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Instance IP"
                     name="instanceIP"
                     type="string"
                     value="172.16.19.15"
@@ -943,46 +984,84 @@ export default function MinerTable({ miners }: MinerProps) {
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Created At"
+                    name="wallet"
+                    type="text"
+                    value={selectedRow.wallet}
+                    variant="flat"
+                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    UID:
+                  </label>
+                  <Input
+                    name="uid"
+                    type="number"
+                    value={selectedRow.uid}
+                    variant="flat"
+                  />
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Created At:
+                  </label>
+                  <Input
                     name="createdAt"
                     type="text"
                     value="11:05:30:04:11:2025"
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Updated At:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Updated At"
                     name="updatedAt"
                     type="text"
                     value="11:05:30:04:11:2025"
                     variant="flat"
                   />
                 </div>
-                <Textarea
-                  disableAnimation
-                  disableAutosize
-                  isReadOnly
-                  classNames={{
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  label="Description"
-                  value="hello world"
-                  variant="bordered"
-                />
-                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    isReadOnly
-                    label="Wallet"
-                    name="wallet"
-                    type="text"
-                    value={selectedRow.wallet}
-                    variant="flat"
+
+                <div className="flex w-full flex-wrap items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Description:
+                  </label>
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    classNames={{
+                      input: "resize-y min-h-[40px]",
+                    }}
+                    value="hello world"
+                    variant="bordered"
                   />
                 </div>
+
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 text-sm">Healthy: </p>
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Healthy:
+                  </label>
                   <Chip
                     color={
                       selectedRow.healthy === "running" ? "success" : "warning"
@@ -991,7 +1070,12 @@ export default function MinerTable({ miners }: MinerProps) {
                   >
                     {selectedRow.healthy === "running" ? "Running" : "Expired"}
                   </Chip>
-                  <p className="px-2 text-sm">Repo: </p>
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Repo:
+                  </label>
                   <Chip
                     color={
                       selectedRow.repo === "updated" ? "primary" : "danger"
@@ -1002,7 +1086,12 @@ export default function MinerTable({ miners }: MinerProps) {
                   </Chip>
                 </div>
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <p className="px-2 w-20 text-sm">Action: </p>
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Action:
+                  </label>
                   <Button
                     color="secondary"
                     size="sm"
@@ -1104,9 +1193,15 @@ export default function MinerTable({ miners }: MinerProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showSubnetDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

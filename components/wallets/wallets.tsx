@@ -490,7 +490,7 @@ export default function WalletTable({ wallets }: WalletsProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Wallets</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Wallets</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -593,12 +593,12 @@ export default function WalletTable({ wallets }: WalletsProps) {
       <Modal
         backdrop={backdrop}
         classNames={{
-          body: "rounded-[15px] border-1 m-[9px] m-5 py-5",
+          body: "rounded-[15px] border-1 m-[9px] m-5 py-5 gap-5",
         }}
         isDismissable={false}
         isOpen={isShowCreateNewSubnetModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onCreateNewSubnetModal}
       >
         <ModalContent>
@@ -609,37 +609,53 @@ export default function WalletTable({ wallets }: WalletsProps) {
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    key="wallet_name"
-                    isRequired
-                    label="Wallet Name"
-                    type="text"
-                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet Name:
+                  </label>
+                  <Input key="wallet_name" isRequired type="text" />
 
-                  <Input
-                    key="wallet_hotkey"
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet Hotkey:
+                  </label>
+                  <Input key="wallet_hotkey" isRequired type="text" />
+                </div>
+                <div className="flex w-full flex-wrap justify-end items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Description:
+                  </label>
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
                     isRequired
-                    label="Wallet Hotkey"
-                    type="text"
+                    classNames={{
+                      input: "resize-y min-h-[40px]",
+                    }}
+                    variant="bordered"
                   />
                 </div>
-                <Textarea
-                  disableAnimation
-                  disableAutosize
-                  isRequired
-                  classNames={{
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  label="Description"
-                  variant="bordered"
-                />
+
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input key="uid" isRequired label="UID" type="text" />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    UID:
+                  </label>
+                  <Input key="uid" isRequired type="text" />
                   <Checkbox
                     classNames={{
-                      label: "text-small",
+                      label: "text-base",
                       base: cn(
-                        "w-1/2 max-w-md",
+                        "min-w-1/2",
                         "hover:bg-content2 items-center justify-start",
                         "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
                         "data-[selected=true]:border-primary",
@@ -653,19 +669,20 @@ export default function WalletTable({ wallets }: WalletsProps) {
                 </div>
                 {!isChecked && (
                   <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                    <Input
-                      key="coldkey_seed"
-                      isRequired
-                      label="Coldkey Seed"
-                      type="text"
-                    />
-
-                    <Input
-                      key="hotkey_seed"
-                      isRequired
-                      label="Hotkey Seed"
-                      type="text"
-                    />
+                    <label
+                      className="min-w-[110px] text-right text-base"
+                      htmlFor="wallet_name"
+                    >
+                      Coldkey Seed:
+                    </label>
+                    <Input key="coldkey_seed" isRequired type="text" />
+                    <label
+                      className="min-w-[120px] text-right text-base"
+                      htmlFor="wallet_name"
+                    >
+                      Hotkey Seed:
+                    </label>
+                    <Input key="hotkey_seed" isRequired type="text" />
                   </div>
                 )}
               </ModalBody>
@@ -719,7 +736,7 @@ export default function WalletTable({ wallets }: WalletsProps) {
         isDismissable={false}
         isOpen={isShowSubnetDetails}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowSubnetDetails}
       >
         <ModalContent>
@@ -728,18 +745,27 @@ export default function WalletTable({ wallets }: WalletsProps) {
               <ModalHeader className="flex flex-col gap-1">
                 Wallet Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet Name:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Wallet Name: "
                     name="walletName"
                     type="text"
                     value={selectedRow.walletName}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet Hotkey:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -754,7 +780,6 @@ export default function WalletTable({ wallets }: WalletsProps) {
                         )}
                       </button>
                     }
-                    label="Wallet Hotkey: "
                     name="walletHotkey"
                     type="text"
                     value={selectedRow.walletHotkey}
@@ -763,17 +788,25 @@ export default function WalletTable({ wallets }: WalletsProps) {
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    UID:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="UID"
                     name="udi"
                     type="text"
                     value={selectedRow.walletName}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Alpha Stakes:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Alpha Stakes"
                     name="walletHotkey"
                     type="text"
                     value={selectedRow.walletHotkey}
@@ -782,36 +815,49 @@ export default function WalletTable({ wallets }: WalletsProps) {
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Instance:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Instance"
                     name="instance"
                     type="text"
                     value="tm_sn3"
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[120px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Balance:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={<p>tao</p>}
-                    label="Balance"
                     name="walletHotkey"
                     type="number"
                     value="46"
                     variant="flat"
                   />
                 </div>
-
-                <Textarea
-                  disableAnimation
-                  disableAutosize
-                  isReadOnly
-                  classNames={{
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  label="Description"
-                  value="hello world"
-                  variant="bordered"
-                />
+                <div className="flex w-full flex-wrap items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Description:
+                  </label>
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    classNames={{
+                      input: "resize-y min-h-[40px]",
+                    }}
+                    value="hello world"
+                    variant="bordered"
+                  />
+                </div>
               </ModalBody>
               <ModalFooter className="flex items-center justify-center">
                 <Button color="danger" onPress={closeSubnetDetailModal}>
@@ -846,6 +892,7 @@ export default function WalletTable({ wallets }: WalletsProps) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -880,9 +927,15 @@ export default function WalletTable({ wallets }: WalletsProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showSubnetDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

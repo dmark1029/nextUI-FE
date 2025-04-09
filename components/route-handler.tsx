@@ -17,7 +17,7 @@ export function RouteHandler({ children }: { children: React.ReactNode }) {
         {!isSignInPage && <Sidebar />}
         <div className="flex flex-col w-full">
           {!isSignInPage && <Navbar />}
-          <main className="container mx-auto max-w-7xl px-6 flex-grow max-h-screen overflow-auto">
+          <main className="container mx-auto max-w-7xl flex-grow max-h-screen overflow-auto">
             {children}
           </main>
           {!isSignInPage && <Footer />}

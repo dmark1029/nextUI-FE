@@ -62,6 +62,7 @@ export default function StakingTable({ stakingData }: StakingProps) {
     setCopiedValue("");
     setSelectedRow(item);
     showStakingDetailModal();
+    console.log("item", item);
   };
 
   const copyCode = async (code: string) => {
@@ -486,7 +487,7 @@ export default function StakingTable({ stakingData }: StakingProps) {
     return (
       <div className="mb-[18px] flex items-center justify-between">
         <div className="flex w-[226px] items-center gap-2">
-          <h1 className="text-2xl font-[700] leading-[32px]">Staking</h1>
+          <h1 className="text-2xl font-[800] leading-[32px]">Staking</h1>
           <Chip
             className="hidden items-center text-default-500 sm:flex"
             size="sm"
@@ -574,12 +575,12 @@ export default function StakingTable({ stakingData }: StakingProps) {
       <Modal
         backdrop={backdrop}
         classNames={{
-          body: "rounded-[15px] border-1 m-[9px] m-5 py-5",
+          body: "rounded-[15px] border-1 m-[9px] m-5 py-5 gap-5",
         }}
         isDismissable={false}
         isOpen={isShowNewStakingModal}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onNewStakingModal}
       >
         <ModalContent>
@@ -589,42 +590,47 @@ export default function StakingTable({ stakingData }: StakingProps) {
                 New Stake
               </ModalHeader>
               <ModalBody>
-                <div className="flex w-full flex-wrap md:flex-nowrap pl-2 mb-6 md:mb-0 gap-4 justify-start items-center">
-                  <Select
-                    isRequired
-                    className="max-w-full"
-                    label="Subnet"
-                    labelPlacement="outside-left"
+                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 justify-start items-center">
+                  <label
+                    className="min-w-[60px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
+                    Subnet:
+                  </label>
+                  <Select className="max-w-full" labelPlacement="outside-left">
                     <SelectItem key="1">Apex</SelectItem>
                     <SelectItem key="2">Chute</SelectItem>
                   </Select>
-                  <Select
-                    isRequired
-                    className="max-w-full"
-                    label="Wallet"
-                    labelPlacement="outside-left"
+
+                  <label
+                    className="min-w-[80px] text-right text-base"
+                    htmlFor="wallet_name"
                   >
+                    Wallet:
+                  </label>
+                  <Select>
                     <SelectItem key="wallet1">ZypherStorm</SelectItem>
                     <SelectItem key="wallet2">ZypherStorm123</SelectItem>
                   </Select>
                 </div>
 
                 <div className="flex w-full flex-wrap justify-end items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    key="reward"
-                    isRequired
-                    label="Reward"
-                    labelPlacement="outside-left"
-                    placeholder="120"
-                    type="number"
-                  />
+                  <label
+                    className="min-w-[60px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Reward:
+                  </label>
+                  <Input key="reward" placeholder="120" type="number" />
 
+                  <label
+                    className="min-w-[80px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Staked At:
+                  </label>
                   <Input
                     key="hotkey_seed"
-                    isRequired
-                    label="Staked At"
-                    labelPlacement="outside-left"
                     placeholder="2025-04-01T10:30:00Z"
                     type="text"
                   />
@@ -680,7 +686,7 @@ export default function StakingTable({ stakingData }: StakingProps) {
         isDismissable={false}
         isOpen={isShowSubnetDetails}
         placement="top-center"
-        size="xl"
+        size="2xl"
         onOpenChange={onShowSubnetDetails}
       >
         <ModalContent>
@@ -689,18 +695,27 @@ export default function StakingTable({ stakingData }: StakingProps) {
               <ModalHeader className="flex flex-col gap-1">
                 Wallet Detail
               </ModalHeader>
-              <ModalBody className="border-1 rounded-lg mx-4 p-4">
+              <ModalBody className="border-1 rounded-lg mx-4 p-4 gap-5">
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet Name:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="Wallet Name: "
                     name="walletName"
                     type="text"
-                    value={selectedRow.walletName}
+                    value={selectedRow.wallet}
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Wallet Hotkey:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={
                       <button
                         aria-label="toggle password visibility"
@@ -715,7 +730,34 @@ export default function StakingTable({ stakingData }: StakingProps) {
                         )}
                       </button>
                     }
-                    label="Wallet Hotkey: "
+                    name="walletHotkey"
+                    type="text"
+                    value="oxs9d93f8a7s98798"
+                    variant="flat"
+                  />
+                </div>
+
+                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    UID:
+                  </label>
+                  <Input
+                    isReadOnly
+                    name="uid"
+                    type="text"
+                    value={selectedRow.id}
+                    variant="flat"
+                  />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Alpha Stakes:
+                  </label>
+                  <Input
                     name="walletHotkey"
                     type="text"
                     value={selectedRow.walletHotkey}
@@ -724,37 +766,26 @@ export default function StakingTable({ stakingData }: StakingProps) {
                 </div>
 
                 <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Instance:
+                  </label>
                   <Input
-                    isReadOnly
-                    label="UID"
-                    name="udi"
-                    type="text"
-                    value={selectedRow.walletName}
-                    variant="flat"
-                  />
-                  <Input
-                    isReadOnly
-                    label="Alpha Stakes"
-                    name="walletHotkey"
-                    type="text"
-                    value={selectedRow.walletHotkey}
-                    variant="flat"
-                  />
-                </div>
-
-                <div className="flex w-full flex-wrap items-center md:flex-nowrap mb-6 md:mb-0 gap-4">
-                  <Input
-                    isReadOnly
-                    label="Instance"
                     name="instance"
                     type="text"
                     value="tm_sn3"
                     variant="flat"
                   />
+                  <label
+                    className="min-w-[110px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Balance:
+                  </label>
                   <Input
-                    isReadOnly
                     endContent={<p>tao</p>}
-                    label="Balance"
                     name="walletHotkey"
                     type="number"
                     value="46"
@@ -762,17 +793,25 @@ export default function StakingTable({ stakingData }: StakingProps) {
                   />
                 </div>
 
-                <Textarea
-                  disableAnimation
-                  disableAutosize
-                  isReadOnly
-                  classNames={{
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  label="Description"
-                  value="hello world"
-                  variant="bordered"
-                />
+                <div className="flex w-full flex-wrap items-start md:flex-nowrap mb-6 md:mb-0 gap-4">
+                  <label
+                    className="min-w-[100px] text-right text-base"
+                    htmlFor="wallet_name"
+                  >
+                    Description:
+                  </label>
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    isReadOnly
+                    classNames={{
+                      input: "resize-y min-h-[40px]",
+                    }}
+                    label="Description"
+                    value="hello world"
+                    variant="bordered"
+                  />
+                </div>
               </ModalBody>
               <ModalFooter className="flex items-center justify-center">
                 <Button color="danger" onPress={closeStakingDetailModal}>
@@ -807,6 +846,7 @@ export default function StakingTable({ stakingData }: StakingProps) {
                 column.uid === "actions"
                   ? "flex items-center px-[20px] justify-center"
                   : "",
+                "text-sm",
               ])}
             >
               {column.uid === "username" ? (
@@ -841,9 +881,15 @@ export default function StakingTable({ stakingData }: StakingProps) {
         </TableHeader>
         <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onClick={() => showSubnetDetails(item)}>
+            <TableRow
+              key={item.id}
+              className="h-16"
+              onClick={() => showSubnetDetails(item)}
+            >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="text-base">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

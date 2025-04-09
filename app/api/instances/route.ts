@@ -31,7 +31,7 @@ export type Instances = {
 const mochInstances: Instances[] = [
   {
     id: 1,
-    username: "Alice Johnson",
+    username: "instance1",
     subnetName: "subnet-12345678",
     type: "AWS",
     ip: "237.84.2.178",
@@ -41,7 +41,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 2,
-    username: "Bob Smith",
+    username: "instance1",
     subnetName: "subnet-87654321",
     type: "GCP",
     ip: "244.178.44.111",
@@ -51,7 +51,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 3,
-    username: "Charlie Brown",
+    username: "instance13",
     subnetName: "subnet-34567890",
     type: "Azure",
     ip: "237.84.2.178",
@@ -61,7 +61,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 4,
-    username: "David Wilson",
+    username: "instance14",
     subnetName: "subnet-01234567",
     type: "AWS",
     ip: "244.178.44.111",
@@ -71,7 +71,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 5,
-    username: "Eve Martinez",
+    username: "instance15",
     subnetName: "subnet-67890123",
     type: "GCP",
     ip: "237.84.2.178",
@@ -81,7 +81,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 6,
-    username: "Frank Thompson",
+    username: "instance16",
     subnetName: "subnet-23456789",
     type: "Azure",
     ip: "244.178.44.111",
@@ -91,7 +91,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 7,
-    username: "Grace Garcia",
+    username: "instance17",
     subnetName: "subnet-90123456",
     type: "AWS",
     ip: "237.84.2.178",
@@ -101,7 +101,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 8,
-    username: "Hannah Lee",
+    username: "instance18",
     subnetName: "subnet-34567890",
     type: "GCP",
     ip: "244.178.44.111",
@@ -111,7 +111,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 9,
-    username: "Isaac Anderson",
+    username: "instance19",
     subnetName: "subnet-01234567",
     type: "Azure",
     ip: "237.84.2.178",
@@ -121,7 +121,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 10,
-    username: "Julia Roberts",
+    username: "instance10",
     subnetName: "subnet-67890123",
     type: "AWS",
     ip: "244.178.44.111",
@@ -131,7 +131,7 @@ const mochInstances: Instances[] = [
   },
   {
     id: 11,
-    username: "Danijel Roberts",
+    username: "instance11",
     subnetName: "subnet-23456789",
     type: "GCP",
     ip: "244.178.44.111",
